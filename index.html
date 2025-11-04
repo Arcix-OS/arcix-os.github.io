@@ -353,10 +353,9 @@
   .made-for{
     margin-top:20px;
     font-size:1.4rem;
-    display:flex;
-    gap:12px;
-    align-items:center;
-    justify-content:center;
+    display:inline-flex;
+    gap:8px;
+    align-items:baseline;
     animation:fadeInUp .8s var(--ease) both .8s;
   }
   .made-for .label{
@@ -366,22 +365,17 @@
   }
   .typed{
     position:relative;
-    min-width:200px;
-    height:40px;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    overflow:visible;
+    display:inline-block;
     font-weight:900;
     color:var(--accent);
     letter-spacing:0.5px;
     text-shadow:0 0 20px rgba(0,255,136,0.6);
+    min-width:160px;
   }
   .typed span{
     position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%) scale(0.8);
+    left:0;
+    top:0;
     opacity:0;
     white-space:nowrap;
     animation:morphCycle 12s cubic-bezier(.4,0,.2,1) infinite;
@@ -394,10 +388,10 @@
   .typed span:nth-child(6){animation-delay:10s}
 
   @keyframes morphCycle{
-    0%{opacity:0;transform:translate(-50%,-50%) scale(0.8) rotateX(90deg)}
-    4%{opacity:1;transform:translate(-50%,-50%) scale(1) rotateX(0deg)}
-    16%{opacity:1;transform:translate(-50%,-50%) scale(1) rotateX(0deg)}
-    20%{opacity:0;transform:translate(-50%,-50%) scale(1.2) rotateX(-90deg)}
+    0%{opacity:0;transform:translateY(8px) scale(0.95)}
+    4%{opacity:1;transform:translateY(0) scale(1)}
+    16%{opacity:1;transform:translateY(0) scale(1)}
+    20%{opacity:0;transform:translateY(-8px) scale(0.95)}
     100%{opacity:0}
   }
 
@@ -858,7 +852,7 @@
         <div class="subtitle">Built for everyone — privacy-first & community-funded</div>
         <p class="lead">A next-generation open-source operating system that unifies mobile and desktop computing. Designed for schools, creators, developers, and everyday people — Arcix is privacy-first, productivity-focused, and built so contributors are paid fairly.</p>
 
-        <div class="made-for" aria-live="polite">
+        <div class="made-for" aria-live="polite" style="justify-content:center;display:flex">
           <div class="label">Made for</div>
           <div class="typed" aria-hidden="true">
             <span>students</span>
@@ -911,6 +905,10 @@
             <p>On-device assistance that summarizes notes, suggests workflows, and automates repetitive tasks — all offline by default.</p>
           </div>
           <div class="card">
+            <h3>Arcix Connect</h3>
+            <p>High-quality calls and messaging over any WiFi network without cellular coverage. End-to-end encrypted with seamless device switching.</p>
+          </div>
+          <div class="card">
             <h3>Community Funding</h3>
             <p>Transparent funding that pays contributors, funds education pilots, and supports long-term maintenance.</p>
           </div>
@@ -924,6 +922,14 @@
           <div class="card reveal">
             <h3>App Compatibility</h3>
             <p>Android apps, PWAs, and optional containers for advanced desktop-style applications.</p>
+          </div>
+          <div class="card reveal">
+            <h3>Cross-Device Communication</h3>
+            <p>Start calls on your phone and continue on desktop. Integrated voicemail and messaging hub with offline message queuing.</p>
+          </div>
+          <div class="card reveal">
+            <h3>WiFi-First Network</h3>
+            <p>Make calls and send messages over any WiFi network without cellular coverage — perfect for schools and community spaces.</p>
           </div>
         </div>
       </div>
@@ -968,6 +974,10 @@
           <div class="contributor">
             <h4>arimzyphr</h4>
             <div>Co-Founder • Lead Developer</div>
+          </div>
+          <div class="contributor">
+            <h4>PCMan67</h4>
+            <div>Developer • TS-0172</div>
           </div>
         </div>
 
