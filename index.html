@@ -1,453 +1,1042 @@
 <!doctype html>
+<!--
+  Arcix OS — Single-file cinematic landing page
+  - Full single-file HTML containing: CSS, JS, markup
+  - Boot cinematic (purple neon) using local logo "Icon Dark.png"
+  - Replay / Enter Site flow, "Don't show again" preference
+  - Full responsive site: Hero, Features, Demo, Roadmap, Transparency, FAQ, Join, Contact
+  - Accessibility support (aria, prefers-reduced-motion, keyboard shortcuts)
+  - Simulated forms (no external network) with validation + nice UX
+  - Carefully commented and intentionally detailed for expandability
+-->
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Arcix OS — Boot Experience</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg-0:#040206;
-    --bg-1:#07060b;
-    --glass: rgba(255,255,255,0.04);
-    --muted: #bfc9ff;
-    --accent-1: #b78fff;
-    --accent-2: #66d6ff;
-    --accent-strong:#7a4cff;
-    --neon: rgba(183,143,255,0.12);
-    --radius:18px;
-    --ease: cubic-bezier(.2,.9,.2,1);
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Arcix OS — A new generation of operating systems.</title>
+  <meta name="description" content="Arcix OS — privacy-first, community-funded, cinematic OS experience. In active development by lilacviolets & arimzyphr. 50% charity • 50% maintenance." />
+  <link rel="icon" href="Icon Dark.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ======================================================
+       Global variables & base reset
+       ====================================================== */
+    :root{
+      --bg:#050306;
+      --bg-2:#06040b;
+      --fg:#e8fff0;
+      --muted:#9fbfb0;
+      --accent:#00ff88;
+      --accent-2:#66ffb8;
+      --accent-strong:#00cc66;
+      --purple-1:#b78fff;
+      --purple-2:#8757ff;
+      --glass:rgba(255,255,255,0.03);
+      --card:#070707;
+      --radius:18px;
+      --max:1400px;
+      --ease:cubic-bezier(.2,.9,.2,1);
+      --nav-h:78px;
+      --shadow-glow:0 30px 90px rgba(0,255,136,0.06);
+      --muted-alpha: rgba(159,191,176,0.85);
+      --content-gap: clamp(18px, 2vw, 36px);
+    }
 
-  /* Reset */
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{
-    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-    background: radial-gradient(1200px 600px at 10% 10%, rgba(120,80,200,0.06), transparent 6%),
-                radial-gradient(800px 400px at 90% 90%, rgba(60,200,255,0.03), transparent 8%),
-                linear-gradient(180deg,var(--bg-0),var(--bg-1));
-    color: #e9eefc;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    overflow:hidden;
-  }
+    /* Reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html,body { height:100%; }
+    body{
+      margin:0; background: linear-gradient(180deg,var(--bg),var(--bg-2));
+      color:var(--fg); font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      line-height:1.45; overflow-x:hidden; scroll-behavior:smooth;
+    }
+    a { color:var(--accent-2); text-decoration:none; }
+    img { display:block; max-width:100%; height:auto; }
 
-  /* fullscreen container */
-  .stage{
-    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-    padding:32px; gap:28px;flex-direction:column;
-  }
+    /* Utility */
+    .wrap{ max-width:var(--max); margin:0 auto; padding:0 24px; position:relative; z-index:60; }
+    .small { font-size:.9rem; color:var(--muted); }
+    .btn{ display:inline-flex; align-items:center; gap:10px; padding:10px 16px; border-radius:999px; cursor:pointer; user-select:none; border:0; font-weight:800; }
+    .btn:active{ transform: translateY(1px); }
+    .btn-ghost{ background:transparent; color:var(--accent); border:1px solid rgba(0,255,136,0.06); padding:8px 12px; border-radius:10px; }
+    .btn-primary{ background:linear-gradient(135deg,var(--accent),var(--accent-strong)); color:#001a0f; padding:12px 18px; box-shadow:0 10px 40px rgba(0,255,136,0.08); }
 
-  /* glass shell */
-  .shell{
-    width:min(1100px,92vw);
-    height:min(720px,86vh);
-    border-radius:20px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border:1px solid rgba(183,143,255,0.06);
-    box-shadow: 0 40px 120px rgba(110,64,220,0.08), inset 0 1px 0 rgba(255,255,255,0.02);
-    overflow:hidden; position:relative; display:flex; flex-direction:column;
-    backdrop-filter: blur(10px) saturate(120%);
-  }
+    /* ======================================================
+       Boot cinematic overlay (purple neon theme)
+       - full-screen, shows first on load unless user opts-out
+       ====================================================== */
+    #bootOverlay{
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column;
+      background:
+        radial-gradient(900px 400px at 10% 10%, rgba(183,143,255,0.08), transparent 8%),
+        radial-gradient(640px 420px at 88% 82%, rgba(102,214,255,0.03), transparent 10%),
+        linear-gradient(180deg, rgba(2,0,8,0.96), rgba(6,3,12,0.98));
+      z-index:9999; transition: opacity .9s var(--ease), visibility .9s var(--ease);
+      -webkit-tap-highlight-color: transparent;
+    }
+    #bootOverlay.hidden{ opacity:0; visibility:hidden; pointer-events:none; }
 
-  /* top nav area */
-  .shell-top{
-    height:78px; display:flex; align-items:center; gap:18px; padding:12px 22px;
-    border-bottom:1px solid rgba(255,255,255,0.02);
-  }
-  .brand{
-    display:flex;align-items:center;gap:14px;cursor:default;user-select:none;
-  }
-  .mini{
-    width:56px;height:56px;border-radius:12px;padding:10px;
-    background: linear-gradient(135deg,#030205,#0a0810);
-    border: 1px solid rgba(183,143,255,0.12);
-    display:flex;align-items:center;justify-content:center; position:relative; overflow:hidden;
-    box-shadow: 0 6px 30px rgba(120,70,220,0.06);
-  }
-  .mini svg{width:100%;height:100%;filter: drop-shadow(0 10px 40px rgba(120,70,220,0.08))}
-  .title{
-    font-weight:800;font-size:1.05rem;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .meta{margin-left:auto;color:var(--muted);font-weight:700;font-size:.92rem;opacity:.9}
+    .boot-inner{
+      width:min(1200px,94vw); max-width:1200px; padding:28px; border-radius:20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));
+      border:1px solid rgba(183,143,255,0.06); box-shadow: 0 40px 120px rgba(100,60,170,0.12);
+      display:flex; gap:28px; align-items:center; justify-content:space-between;
+    }
 
-  /* main boot screen */
-  .boot-area{
-    flex:1; display:flex; align-items:center; justify-content:center; position:relative;
-    padding:28px;
-    background:
-      radial-gradient(800px 420px at 10% 30%, rgba(120,70,220,0.03), transparent 10%),
-      linear-gradient(180deg, rgba(2,2,2,0.7), rgba(6,6,6,0.9));
-  }
+    /* left column: logo + glyph */
+    .boot-left{ width:48%; display:flex; flex-direction:column; align-items:center; gap:18px; }
 
-  /* left: glyph & scan */
-  .left{
-    width:55%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px;
-  }
+    .boot-logo{
+      width:180px; height:180px; border-radius:20px; overflow:hidden; display:grid; place-items:center; position:relative;
+      border:1px solid rgba(255,255,255,0.03); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));
+      box-shadow: 0 30px 80px rgba(140,80,200,0.08), inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+    .boot-logo img{ width:92%; height:92%; object-fit:contain; opacity:0.98; filter: drop-shadow(0 18px 48px rgba(135,87,255,0.12)); }
 
-  .glyph-wrap{
-    width:360px;height:360px;border-radius:20px;display:grid;place-items:center;
-    transform-style:preserve-3d;
-    transition: transform .6s var(--ease);
-    position:relative;
-  }
-  .glyph-card{
-    width:86%; height:86%; border-radius:14px; display:grid; place-items:center;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border:1px solid rgba(183,143,255,0.06);
-    box-shadow: 0 30px 80px rgba(120,70,220,0.06), inset 0 1px 0 rgba(255,255,255,0.02);
-    position:relative; overflow:hidden;
-  }
-  .glyph-svg{ width:64%; height:64%; filter: drop-shadow(0 28px 64px rgba(120,70,220,0.14)); opacity:0.98}
+    .glyph-wrap{ width:320px; height:320px; border-radius:16px; display:grid; place-items:center; transform:translateZ(80px) scale(.95); opacity:0; transition: transform .7s var(--ease), opacity .7s var(--ease); }
+    .glyph-svg{ width:86%; height:86%; filter: drop-shadow(0 26px 84px rgba(135,87,255,0.12)); }
 
-  /* stroke style */
-  .glyph-stroke { stroke: url(#ggrad); stroke-width:3; fill:none; stroke-linecap:round; stroke-linejoin:round; }
-  .glyph-glow { filter: blur(6px); opacity:0.32; mix-blend-mode: screen; }
+    /* scan + log */
+    .scan-wrap{ width:100%; height:14px; margin-top:6px; border-radius:999px; background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(183,143,255,0.02)); overflow:hidden; opacity:0; transition: opacity .6s var(--ease) }
+    .scan-bar{ height:100%; width:12%; background:linear-gradient(90deg,var(--purple-1),var(--purple-2)); transform:translateX(-160%); transition: transform 2.2s linear; will-change: transform; }
 
-  /* scan and log */
-  .scan-wrap{ width:64%; height:12px; border-radius:999px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(183,143,255,0.02)); overflow:hidden; }
-  .scan-bar{ height:100%; width:10%; background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); transform:translateX(-160%); transition: transform 2.2s linear; will-change:transform; }
+    .boot-log{ margin-top:12px; color:var(--muted); font-weight:700; opacity:0; transition: opacity .6s var(--ease); font-size:.95rem; min-height:28px; text-align:center; }
 
-  .boot-log{ margin-top:10px; color:var(--muted); font-weight:700; opacity:0; transition:opacity .36s ease; font-size:0.95rem; min-height:28px; text-align:center; }
+    /* right column: terminal + actions */
+    .boot-right{ width:48%; display:flex; flex-direction:column; gap:16px; align-items:stretch; }
 
-  /* right: status & terminal */
-  .right{
-    width:42%; display:flex; flex-direction:column; gap:18px; align-items:stretch; justify-content:center;
-  }
+    .console{
+      background: linear-gradient(180deg, rgba(0,0,0,0.5), rgba(8,6,8,0.6));
+      border-radius:12px; padding:14px; border:1px solid rgba(183,143,255,0.04);
+      color:#cfd6ff; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      font-size:0.92rem; min-height:220px; overflow:auto; line-height:1.45;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+    .term-line{ opacity:0; transform:translateY(8px); transition: opacity .28s var(--ease), transform .28s var(--ease); white-space:nowrap; }
+    .term-line.visible{ opacity:1; transform:none; }
 
-  .status-card{
-    padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
-    border:1px solid rgba(255,255,255,0.02); font-weight:700; color:var(--muted);
-  }
+    .boot-controls{ display:flex; gap:12px; align-items:center; justify-content:flex-end; margin-top:6px; }
+    .btn-soft{ padding:8px 12px; border-radius:10px; font-weight:800; background:transparent; color:var(--muted); border:1px solid rgba(183,143,255,0.06); cursor:pointer; }
 
-  .terminal{
-    background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(12,10,14,0.6));
-    border-radius:12px;padding:14px;border:1px solid rgba(183,143,255,0.04);
-    color:#bcd6ff;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-    font-size:0.92rem; min-height:220px; overflow:auto; line-height:1.45;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
-  }
+    .boot-actions{ display:flex; gap:12px; justify-content:center; margin-top:10px; }
 
-  .term-line{opacity:0.0; transform: translateY(6px); transition: all .28s var(--ease); white-space:nowrap;}
-  .term-line.visible{ opacity:1; transform: none; }
+    /* tiny preference line */
+    .pref-row{ display:flex; align-items:center; gap:10px; color:var(--muted); font-weight:600; font-size:0.92rem; }
 
-  .controls{ display:flex; gap:10px; margin-top:6px; align-items:center; justify-content:flex-end; }
-  .btn{ padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(183,143,255,0.09); color:var(--muted); font-weight:800; cursor:pointer; }
-  .btn.primary{ background:linear-gradient(135deg,var(--accent-1),var(--accent-strong)); color:#001a0f; border:0; box-shadow: 0 10px 36px rgba(120,70,220,0.12) }
+    /* particles (behind boot inner) */
+    .boot-particles{ position:absolute; inset:0; pointer-events:none; z-index: -1; mix-blend-mode: screen; }
 
-  /* particles layer */
-  .particles{
-    pointer-events:none; position:absolute; inset:0; z-index:8; mix-blend-mode: screen;
-  }
-  .particle{
-    position:absolute; border-radius:50%; width:6px;height:6px; background: linear-gradient(180deg,var(--accent-1),var(--accent-2)); opacity:.6;
-    box-shadow:0 0 18px rgba(120,70,220,0.15);
-    transform: translateY(0); will-change: transform, opacity;
-  }
+    /* ======================================================
+       Main site (purple UI kept) — content revealed after boot
+       ====================================================== */
+    header.site{
+      position:fixed; inset:0 0 auto 0; height:var(--nav-h); display:flex; align-items:center; z-index:220;
+      background: linear-gradient(180deg, rgba(0,0,0,0.14), rgba(0,0,0,0.06)); backdrop-filter: blur(12px) saturate(140%);
+      border-bottom: 1px solid rgba(0,255,136,0.04);
+      transition: all .45s var(--ease);
+    }
+    .nav{ display:flex; align-items:center; justify-content:space-between; width:100%; gap:12px; padding:0 18px; }
+    .brand{ display:flex; align-items:center; gap:12px; cursor:pointer; user-select:none; }
+    .mini{ width:56px; height:56px; border-radius:12px; padding:8px; background: linear-gradient(135deg,#0a0610,#040308); border:1px solid rgba(183,143,255,0.08); display:flex; align-items:center; justify-content:center; box-shadow: 0 8px 28px rgba(120,70,220,0.04); overflow:hidden; }
+    .brand .title{ font-weight:900; font-size:1.05rem; background: linear-gradient(90deg,var(--purple-1),var(--purple-2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
 
-  /* footer small */
-  .shell-foot{ height:48px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.9rem; border-top:1px solid rgba(255,255,255,0.01); }
+    main.site{ position:relative; z-index:50; opacity:0; transition: opacity .9s var(--ease); }
+    main.site.visible{ opacity:1; }
 
-  /* utility & responsive */
-  .hidden{ display:none }
-  @media (max-width:980px){
-    .shell{ height:92vh; width:94vw }
-    .left{ width:100% }
-    .right{ width:100% }
-    .boot-area{ padding:18px }
-    .glyph-wrap{ width:260px; height:260px }
-    .shell-top{ height:64px }
-    .mini{ width:44px;height:44px;padding:8px }
-  }
+    .hero{
+      min-height:120vh; padding-top: calc(var(--nav-h) + 28px); display:flex; align-items:center; justify-content:center; text-align:center; perspective:1400px; padding-bottom:64px;
+    }
+    .hero-inner{ max-width:1200px; margin:0 auto; padding:40px 20px; display:grid; gap:22px; align-items:center; justify-items:center; }
+    .hero-title{ font-weight:900; font-size:clamp(2.2rem,6.5vw,4.2rem); line-height:0.95; margin:10px 0; color:transparent; background: linear-gradient(90deg,var(--purple-1),var(--purple-2),#fff); -webkit-background-clip:text; background-clip:text; text-shadow: 0 0 60px rgba(135,87,255,0.06); }
+    .hero-sub{ color:var(--muted); max-width:920px; margin:0 auto; font-size:1.05rem; }
 
-  /* reduced motion */
-  @media (prefers-reduced-motion: reduce){
-    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
-  }
+    .hero-actions{ display:flex; gap:14px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
 
-</style>
+    .content{ padding:88px 20px; position:relative; z-index:50; background: linear-gradient(180deg, rgba(255,255,255,0.0), rgba(0,0,0,0.01)); }
+
+    .section-title{ font-size:2.28rem; font-weight:900; background:linear-gradient(90deg,var(--purple-1),var(--purple-2)); -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:12px; }
+    .section-sub{ color:var(--muted); margin-bottom:28px; }
+
+    .features-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; }
+    .feature{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02)); border-radius:14px; padding:20px; border:1px solid rgba(183,143,255,0.04); transition: transform .36s var(--ease), box-shadow .36s var(--ease); }
+    .feature:hover{ transform: translateY(-8px); box-shadow: 0 30px 90px rgba(120,70,220,0.04); border-color: rgba(183,143,255,0.12); }
+    .feature h4{ color: var(--purple-1); margin:0 0 10px; }
+    .feature p{ color: var(--muted); font-size:.98rem; line-height:1.6; }
+
+    .demo-stage{ margin-top:28px; border-radius:14px; padding:18px; background: linear-gradient(180deg,#060606,#0a0a0a); border:1px solid rgba(183,143,255,0.03); display:grid; grid-template-columns: 1fr 380px; gap:18px; align-items:start; }
+    .desktop-window{ flex:1; border-radius:10px; background: linear-gradient(180deg,#050505,#0a0a0a); display:flex; align-items:center; justify-content:center; color:var(--muted); font-weight:700; border:1px solid rgba(255,255,255,0.02); min-height:220px; }
+    .demo-right{ display:flex; flex-direction:column; gap:10px; }
+
+    /* FAQ */
+    .faq{ margin-top:22px; display:grid; gap:12px; }
+    .faq-item{ background: linear-gradient(180deg,#050505,#0a0a0a); padding:14px; border-radius:10px; border:1px solid rgba(183,143,255,0.03); cursor:pointer; }
+    .faq-item h5{ margin:0; color:var(--purple-1); font-weight:800; }
+    .faq-body{ margin-top:8px; color:var(--muted); display:none; }
+
+    /* Contributors */
+    .contributors{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:12px; }
+    .contributor{ min-width:160px; padding:12px; border-radius:10px; background: linear-gradient(180deg,#070707,#0a0a0a); border:1px solid rgba(183,143,255,0.03); text-align:center; }
+
+    /* Contact form */
+    form.contact{ max-width:880px; margin:28px auto 0; display:grid; gap:12px; }
+    .input, textarea{ background: rgba(12,12,12,0.75); border-radius:12px; padding:12px 14px; border:1px solid rgba(183,143,255,0.04); color:var(--fg); }
+    .input:focus, textarea:focus{ outline:none; box-shadow: 0 0 0 8px rgba(135,87,255,0.06); border-color: var(--purple-1); }
+    textarea{ min-height:160px; resize:vertical; }
+
+    footer{ padding:48px 20px; color:var(--muted); text-align:center; border-top:1px solid rgba(183,143,255,0.02); margin-top:48px; }
+
+    /* Reveal helper */
+    .reveal{ opacity:0; transform: translateY(36px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+    .visible{ opacity:1; transform:none; }
+
+    /* Responsive */
+    @media (max-width:1100px){
+      .features-grid{ grid-template-columns: repeat(2, 1fr); }
+      .demo-stage{ grid-template-columns: 1fr; row-gap:12px; }
+      .testimonials{ grid-template-columns: 1fr; }
+      .boot-left, .boot-right{ width:100%; }
+      .boot-inner{ flex-direction:column; gap:18px; }
+    }
+    @media (max-width:720px){
+      header.site{ height:68px; }
+      .mini{ width:44px; height:44px; }
+      .nav{ padding:0 12px; }
+      .features-grid{ grid-template-columns: 1fr; }
+      .glyph-wrap{ width:160px; height:160px; }
+      .boot-inner{ padding:18px; border-radius:14px; }
+      .console{ min-height:160px; font-size:.88rem; }
+    }
+
+    /* Reduced motion respect */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .glyph-svg .glyph-stroke{ stroke-dashoffset: 0 !important; transition:none !important; }
+    }
+
+    /* Small helpers for long pages */
+    .muted { color:var(--muted); }
+    .caps { text-transform:uppercase; letter-spacing:1px; font-weight:800; font-size:.85rem; color:var(--muted); }
+  </style>
 </head>
 <body>
-  <div class="stage" role="application" aria-label="Arcix boot cinematic">
-    <div class="shell" role="region" aria-label="Arcix boot window">
-      <div class="shell-top" role="toolbar" aria-hidden="false">
-        <div class="brand" aria-label="Arcix brand">
-          <div class="mini" aria-hidden="true">
-            <!-- inline logo -->
-            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <defs>
-                <linearGradient id="ggrad" x1="0" x2="1">
-                  <stop offset="0" stop-color="#b78fff"/>
-                  <stop offset="1" stop-color="#66d6ff"/>
-                </linearGradient>
-              </defs>
-              <rect x="10" y="10" width="100" height="100" rx="18" fill="url(#ggrad)"/>
-              <circle cx="60" cy="46" r="18" fill="#ffffff" opacity="0.06"/>
-              <path d="M38 80c18-28 44-28 64-10" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.14"/>
-            </svg>
-          </div>
-          <div class="title">arcix</div>
+
+  <!-- =============== Boot overlay =============== -->
+  <div id="bootOverlay" role="dialog" aria-label="Arcix boot cinematic" aria-modal="true">
+    <div class="boot-inner" role="document" aria-label="Arcix cinematic container">
+      <!-- Left: logo, glyph, scan -->
+      <div class="boot-left" aria-hidden="false">
+        <div class="boot-logo" aria-hidden="true">
+          <!-- Use local logo file Icon Dark.png (place next to this HTML) -->
+          <img src="Icon Dark.png" alt="Arcix logo" id="bootLogo" />
         </div>
-        <div class="meta" aria-hidden="true">development preview • v0.5</div>
+
+        <div class="glyph-wrap" id="glyphWrap" aria-hidden="true">
+          <!-- SVG Glyph — stroke paths animate -->
+          <svg class="glyph-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+            <defs>
+              <linearGradient id="ggrad" x1="0" x2="1">
+                <stop offset="0" stop-color="#b78fff"/>
+                <stop offset="1" stop-color="#66d6ff"/>
+              </linearGradient>
+            </defs>
+            <g transform="translate(12,12) scale(0.85)">
+              <circle cx="120" cy="120" r="88" stroke="rgba(255,255,255,0.02)" stroke-width="6" fill="none"/>
+              <path class="glyph-stroke" d="M44 120c18-36 54-56 76-56s58 18 76 56" stroke="url(#ggrad)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="420" stroke-dashoffset="420"/>
+              <path class="glyph-stroke" d="M64 144c18 18 58 26 88 8" stroke="url(#ggrad)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="300" stroke-dashoffset="300"/>
+              <circle class="glyph-glow" cx="120" cy="120" r="6" fill="url(#ggrad)"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="scan-wrap" id="scanWrap" aria-hidden="true">
+          <div class="scan-bar" id="scanBar"></div>
+        </div>
+
+        <div class="boot-log" id="bootLog" aria-live="polite" aria-atomic="true">Booting Arcix…</div>
       </div>
 
-      <div class="boot-area" role="main" aria-live="polite">
-        <div class="left" aria-hidden="false">
-          <div class="glyph-wrap" id="glyphWrap" aria-hidden="true">
-            <div class="glyph-card" role="img" aria-label="Arcix glyph">
-              <!-- main glyph svg (uses same gradient id) -->
-              <svg class="glyph-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="presentation" aria-hidden="true">
-                <defs>
-                  <linearGradient id="ggrad2" x1="0" x2="1">
-                    <stop offset="0" stop-color="#b78fff"/>
-                    <stop offset="1" stop-color="#66d6ff"/>
-                  </linearGradient>
-                </defs>
-                <g transform="translate(12,12) scale(0.85)">
-                  <circle cx="120" cy="120" r="88" stroke="rgba(255,255,255,0.02)" stroke-width="6" fill="none"/>
-                  <path class="glyph-stroke" d="M44 120c18-36 54-56 76-56s58 18 76 56" stroke-dasharray="420" stroke-dashoffset="420"/>
-                  <path class="glyph-stroke" d="M64 144c18 18 58 26 88 8" stroke-dasharray="300" stroke-dashoffset="300"/>
-                  <circle class="glyph-glow" cx="120" cy="120" r="6" fill="url(#ggrad2)"/>
-                </g>
-              </svg>
-            </div>
-          </div>
-
-          <div class="scan-wrap" aria-hidden="true" id="scanWrap">
-            <div class="scan-bar" id="scanBar" aria-hidden="true"></div>
-          </div>
-
-          <div class="boot-log" id="bootLog" aria-hidden="true" role="status" aria-live="polite"></div>
+      <!-- Right: console and actions -->
+      <div class="boot-right" aria-hidden="false">
+        <div class="console" id="console" role="log" aria-live="polite" aria-atomic="false">
+          <!-- Terminal lines inserted by JS -->
+          <div class="term-line" id="termStart">Arcix kernel starting…</div>
         </div>
 
-        <div class="right" aria-hidden="false">
-          <div class="status-card" aria-hidden="true">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <div style="width:10px;height:10px;border-radius:50%;background:var(--accent-1);box-shadow:0 0 8px rgba(183,143,255,0.25)"></div>
-              <div style="font-weight:900;color:var(--accent-1)">Arcix Boot Console</div>
-              <div style="flex:1"></div>
-              <div style="opacity:.85;font-weight:800">privacy-first • community</div>
-            </div>
-          </div>
-
-          <div class="terminal" id="terminal" role="log" aria-live="polite">
-            <!-- terminal lines injected by JS -->
-          </div>
-
-          <div class="controls" aria-hidden="true">
-            <button class="btn" id="replayBtn" title="Replay boot">Replay</button>
-            <button class="btn primary" id="wakeBtn">Wake Arcix</button>
+        <div class="boot-controls" aria-hidden="true">
+          <button class="btn-soft" id="accessibilityBtn" title="Toggle accessibility options (A)">A11y</button>
+          <div style="flex:1"></div>
+          <div class="pref-row">
+            <input type="checkbox" id="skipBoot" aria-label="Skip boot cinematic on future visits" />
+            <label for="skipBoot">Don't show again</label>
           </div>
         </div>
-        
-        <!-- particles layer (inside shell so blend works) -->
-        <div class="particles" id="particles" aria-hidden="true"></div>
+
+        <div class="boot-actions" id="bootActions" aria-hidden="true">
+          <button class="btn btn-ghost" id="replayBoot">Replay Boot</button>
+          <button class="btn btn-primary" id="enterSite">Enter Site</button>
+        </div>
       </div>
 
-      <div class="shell-foot">Arcix OS • Cinematic boot • 50% charity • 50% maintenance</div>
+      <!-- floating particles inside overlay -->
+      <div class="boot-particles" id="bootParticles" aria-hidden="true"></div>
     </div>
   </div>
 
-<script>
-/* ========= OPTIONS ========= */
-const LOGS = [
-  "Initializing hardware abstraction layer…",
-  "Verified secure boot keys…",
-  "Mounting encrypted containers…",
-  "Loading privacy modules (local-first)…",
-  "Preparing Arcix Mind (local assistant)…",
-  "Starting background sync (opt-in)…",
-  "Restoring workspace layout…",
-  "Workspace ready."
-];
+  <!-- =============== Site header (hidden until after boot) =============== -->
+  <header class="site" role="banner" aria-label="Main navigation" id="siteHeader" style="visibility:hidden;opacity:0;transition:visibility 0s .9s, opacity .9s var(--ease);">
+    <div class="wrap nav" role="navigation" aria-label="Primary">
+      <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <div class="mini" aria-hidden="true"><img src="Icon Dark.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
+        <div><div class="title">Arcix</div></div>
+      </div>
 
-/* ========= DOM ========= */
-const terminal = document.getElementById('terminal');
-const glyphPaths = null; // not used directly (we animate by class)
-const scanBar = document.getElementById('scanBar');
-const scanWrap = document.getElementById('scanWrap');
-const bootLog = document.getElementById('bootLog');
-const glyphWrap = document.getElementById('glyphWrap');
-const wakeBtn = document.getElementById('wakeBtn');
-const replayBtn = document.getElementById('replayBtn');
-const particlesRoot = document.getElementById('particles');
+      <nav class="links" aria-label="Primary links">
+        <a href="#features">Features</a>
+        <a href="#vision">Vision</a>
+        <a href="#demo">Demo</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#join">Join</a>
+        <button class="btn btn-primary" id="wakeBtn" aria-pressed="false" title="Replay the boot cinematic">Wake Arcix</button>
+      </nav>
+    </div>
+  </header>
 
-/* ========= helpers ========= */
-const rand = (a,b) => Math.random()*(b-a)+a;
-const createEl = (tag, cls, txt) => { const e = document.createElement(tag); if(cls) e.className = cls; if(txt) e.textContent = txt; return e; };
+  <!-- =============== Main site content =============== -->
+  <main id="mainSite" class="site" role="main" aria-label="Arcix website" tabindex="-1">
+    <!-- HERO -->
+    <section class="hero" aria-label="Arcix boot cinematic hero">
+      <div class="hero-inner wrap">
+        <div style="display:grid; gap:10px; align-items:center; justify-items:center;">
+          <div class="caps">Arcix OS • In active development</div>
+          <h1 class="hero-title" id="mainTitle">A new generation of operating systems.</h1>
+          <p class="hero-sub">Privacy-first. Community-funded. Built by passionate people — led by <strong>lilacviolets</strong> (founder, UI) and <strong>arimzyphr</strong> (co-founder, lead dev). 50% charity • 50% maintenance.</p>
+          <div class="hero-actions" role="group" aria-label="Primary actions">
+            <a class="btn btn-primary" href="https://github.com/Arcix-OS" target="_blank" rel="noopener">Contribute on GitHub</a>
+            <button class="btn btn-ghost" id="pilotBtn">Request a School Pilot</button>
+          </div>
+        </div>
 
-/* ========= terminal simulation ========= */
-let booting = false;
-function clearTerminal(){
-  terminal.innerHTML = '';
-  bootLog.textContent = '';
-  scanBar.style.transform = 'translateX(-160%)';
-  scanWrap.style.opacity = '0';
-  glyphWrap.style.transform = 'scale(.98)';
-}
+        <div style="width:100%;max-width:920px;margin-top:18px;">
+          <div class="boot-card" role="region" aria-label="Arcix boot preview">
+            <div class="boot-top" style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+              <div style="display:flex;gap:8px;">
+                <div class="small-dot" aria-hidden="true" style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.03)"></div>
+                <div class="small-dot" aria-hidden="true" style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.03)"></div>
+                <div class="small-dot" aria-hidden="true" style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.03)"></div>
+              </div>
+              <div style="flex:1"></div>
+              <div class="boot-meta">development preview • v0.5</div>
+            </div>
 
-function pushTerminalLine(text, delay = 0){
-  const line = createEl('div','term-line', text);
-  terminal.appendChild(line);
-  // give slight delay to reveal animation
-  setTimeout(()=> line.classList.add('visible'), 40 + delay);
-  // keep terminal scrolled
-  setTimeout(()=> terminal.scrollTop = terminal.scrollHeight, 80 + delay);
-}
+            <div class="boot-screen" id="heroBootScreen" aria-hidden="false" style="height:420px;border-radius:16px;background:linear-gradient(180deg,#020202,#080808);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+              <div class="vignette" aria-hidden="true" style="position:absolute;inset:0;background: radial-gradient(60% 50% at 50% 28%, rgba(0,0,0,0), rgba(0,0,0,0.6));mix-blend-mode:multiply"></div>
+              <div class="film" aria-hidden="true" style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);background-size:2px 2px;opacity:0.06;mix-blend-mode:overlay"></div>
 
-/* glyph stroke animation */
-function animateGlyphStrokes(){
-  // select stroke paths
-  const paths = document.querySelectorAll('.glyph-stroke');
-  paths.forEach((p,i) => {
-    try{
-      const len = p.getTotalLength();
-      p.style.strokeDasharray = len;
-      p.style.strokeDashoffset = len;
-      // force reflow
-      p.getBoundingClientRect();
-      setTimeout(()=> p.style.transition = `stroke-dashoffset 1.05s cubic-bezier(.2,.9,.2,1) ${i*0.16}s`, 20);
-      requestAnimationFrame(()=> p.style.strokeDashoffset = '0');
-    }catch(e){}
-  });
-}
+              <div class="glyph-wrap reveal" id="glyphPreview" style="width:220px;height:220px;display:grid;place-items:center;">
+                <svg class="glyph-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                  <defs><linearGradient id="lg2" x1="0" x2="1"><stop offset="0" stop-color="#b78fff"/><stop offset="1" stop-color="#66d6ff"/></linearGradient></defs>
+                  <g transform="translate(12,12) scale(0.85)">
+                    <circle cx="120" cy="120" r="88" stroke="rgba(255,255,255,0.02)" stroke-width="6" fill="none"/>
+                    <path class="glyph-stroke" d="M44 120c18-36 54-56 76-56s58 18 76 56" stroke="url(#lg2)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="420" stroke-dashoffset="420"/>
+                    <path class="glyph-stroke" d="M64 144c18 18 58 26 88 8" stroke="url(#lg2)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="300" stroke-dashoffset="300"/>
+                    <circle class="glyph-glow" cx="120" cy="120" r="6" fill="url(#lg2)"/>
+                  </g>
+                </svg>
+              </div>
 
-/* main boot sequence */
-function startBoot(){
-  if(booting) return;
-  booting = true;
-  wakeBtn.disabled = true;
-  replayBtn.disabled = true;
-  clearTerminal();
+              <div style="position:absolute;bottom:22px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+                <div class="scan-wrap" id="scanWrapHero" style="width:420px;height:12px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(183,143,255,0.02));overflow:hidden;opacity:0;">
+                  <div class="scan-bar" id="scanBarHero" style="height:100%;width:12%;background:linear-gradient(90deg,var(--purple-1),var(--purple-2));transform:translateX(-160%);"></div>
+                </div>
+                <div class="boot-log" id="bootLogHero" style="color:var(--muted);font-weight:700;opacity:0;transition:opacity .6s var(--ease);font-size:.95rem;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  // glyph reveal
-  glyphWrap.style.opacity = '1';
-  glyphWrap.style.transform = 'scale(1) translateZ(0)';
+    <!-- Features -->
+    <section id="features" class="content" aria-labelledby="featuresTitle">
+      <div class="section-inner wrap">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;">
+          <div>
+            <div id="featuresTitle" class="section-title">What makes Arcix special</div>
+            <div class="section-sub">Cinematic UX, privacy-first architecture, and an education-first roadmap. We're shipping iteratively with transparency and pilot feedback.</div>
+          </div>
 
-  animateGlyphStrokes();
+          <div style="width:320px;">
+            <div style="background:linear-gradient(180deg,#070707,#0a0a0a); padding:12px; border-radius:12px; border:1px solid rgba(183,143,255,0.03);">
+              <div style="font-weight:800; color:var(--purple-1)">Arcix Mind (optional)</div>
+              <div style="color:var(--muted); margin-top:8px;">On-device assistance. Cloud features are optional and require explicit consent.</div>
+            </div>
+          </div>
+        </div>
 
-  // Type terminal lines with stagger
-  let t = 600;
-  scanWrap.style.opacity = '1';
-  scanBar.style.transform = 'translateX(420%)';
-  pushTerminalLine("Arcix kernel initializing…", 0);
+        <div class="features-grid reveal" style="margin-top:20px;">
+          <div class="feature"><h4>Unified Workspace</h4><p>Context-aware layouts, floating windows, persistent workspaces across devices.</p></div>
+          <div class="feature"><h4>Arcix Connect</h4><p>Wi-Fi-first encrypted messaging & call handoff (pilot phase).</p></div>
+          <div class="feature"><h4>Education Tools</h4><p>Teacher dashboards, offline lesson bundles, and pilot-focused deployments.</p></div>
+          <div class="feature"><h4>Compatibility</h4><p>Android apps, PWAs, and containerized desktop apps — expanding via community testing.</p></div>
+          <div class="feature"><h4>Community Funding</h4><p>50% charity • 50% maintenance. We publish funding reports and maintain audit trails.</p></div>
+          <div class="feature"><h4>Security</h4><p>Per-app permissions, verified boot, encrypted vaults, and minimal telemetry.</p></div>
+        </div>
+      </div>
+    </section>
 
-  LOGS.forEach((l, idx) => {
+    <!-- Demo -->
+    <section id="demo" class="content" aria-labelledby="demoTitle">
+      <div class="section-inner wrap">
+        <div id="demoTitle" class="section-title">Experience the feel (simulated)</div>
+        <div class="section-sub">A short simulated preview of core flows. Real builds are available for pilot partners and contributors.</div>
+
+        <div class="demo-stage reveal">
+          <div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px var(--accent)"></div>
+              <div style="font-weight:800;color:var(--muted)">Simulated workspace</div>
+              <div style="flex:1"></div>
+              <div style="font-weight:700;color:var(--muted)">Preview</div>
+            </div>
+
+            <div class="desktop-window" id="desktopWindow" style="margin-top:12px;">
+              <div id="workspaceCanvas" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
+                <div style="font-weight:900;color:var(--purple-1)">Arcix Workspace (demo)</div>
+                <div style="color:var(--muted)">Development preview — UI & flows will refine through pilots.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:10px;" class="demo-actions">
+              <button class="btn btn-primary" onclick="simulateAction('open')">Open Project</button>
+              <button class="btn btn-ghost" onclick="simulateAction('settings')">System Settings</button>
+              <button class="btn btn-ghost" onclick="simulateAction('mind')">Ask Arcix Mind</button>
+            </div>
+          </div>
+
+          <div class="demo-right">
+            <div style="background:linear-gradient(180deg,#070707,#0a0a0a);padding:12px;border-radius:10px;border:1px solid rgba(183,143,255,0.03);">
+              <div style="font-weight:800;color:var(--purple-1)">Arcix Mind — local by default</div>
+              <div style="color:var(--muted);margin-top:8px;">Runs locally by default. Cloud features require explicit opt-in and documentation.</div>
+            </div>
+
+            <div style="background:linear-gradient(180deg,#060606,#090909);padding:12px;border-radius:10px;border:1px solid rgba(183,143,255,0.03);display:flex;flex-direction:column;gap:8px;">
+              <div style="font-weight:800;color:var(--purple-1)">Try commands</div>
+              <ol style="color:var(--muted); margin:0 0 0 18px;">
+                <li>Open notes → Summarize</li>
+                <li>Export project → Package</li>
+                <li>Teacher mode → Push assignment</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section id="roadmap" class="content" aria-labelledby="roadmapTitle">
+      <div class="wrap section-inner">
+        <div id="roadmapTitle" class="section-title">Roadmap & Pilots</div>
+        <div class="section-sub">Planned milestones, pilot phases, and how you can get involved.</div>
+
+        <div style="display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start;">
+          <div style="background:linear-gradient(180deg,#070707,#090909);padding:18px;border-radius:12px;border:1px solid rgba(183,143,255,0.03);">
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div><strong>Q4 2025</strong> — Expanded pilot testing with 10 schools; Arcix Mind offline optimizations.</div>
+              <div><strong>Q1 2026</strong> — Public alpha: general contributors, translations, hardware compatibility.</div>
+              <div><strong>Q2 2026</strong> — Verified boot & signed builds; accessibility improvements and enterprise pilots.</div>
+            </div>
+          </div>
+
+          <div style="background:linear-gradient(180deg,#060606,#0a0a0a);padding:14px;border-radius:12px;border:1px solid rgba(183,143,255,0.03);">
+            <div style="font-weight:900;color:var(--purple-1)">Pilot criteria</div>
+            <div style="color:var(--muted);margin-top:8px;">We prioritize education partners, contributors, and organizations focusing on privacy-first deployments.</div>
+            <div style="margin-top:10px;"><button class="btn btn-primary" onclick="document.getElementById('join').scrollIntoView({behavior:'smooth'})">Apply for Pilot</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Transparency & Funding -->
+    <section id="transparency" class="content" aria-labelledby="transTitle">
+      <div class="wrap section-inner">
+        <div id="transTitle" class="section-title">Transparency & Funding</div>
+        <div class="section-sub">We commit to publishing funding reports and audit trails. 50% of funds go to charity; 50% to maintenance and infrastructure.</div>
+
+        <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;">
+          <div style="flex:1;min-width:260px;background:linear-gradient(180deg,#070707,#0a0a0a);padding:14px;border-radius:12px;border:1px solid rgba(183,143,255,0.03);">
+            <div style="font-weight:900;color:var(--purple-1)">How we allocate</div>
+            <div style="color:var(--muted);margin-top:8px;">We track and publish monthly reports, and maintain an open ledger for community review.</div>
+          </div>
+
+          <div style="flex:1;min-width:260px;background:linear-gradient(180deg,#070707,#0a0a0a);padding:14px;border-radius:12px;border:1px solid rgba(183,143,255,0.03);">
+            <div style="font-weight:900;color:var(--purple-1)">Audits</div>
+            <div style="color:var(--muted);margin-top:8px;">Independent audits and pilot reports will be published as PDFs and summary posts for contributors.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="content" aria-labelledby="faqTitle">
+      <div class="wrap section-inner">
+        <div id="faqTitle" class="section-title">FAQ</div>
+        <div class="faq">
+          <div class="faq-item" onclick="toggleFAQ(this)" role="button" aria-expanded="false">
+            <h5>Is Arcix compatible with Android apps?</h5>
+            <div class="faq-body">Yes — compatibility layers and containerized runtime are part of our roadmap. We support common PWA workflows and are expanding Android compatibility through community testing.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFAQ(this)" role="button" aria-expanded="false">
+            <h5>Where do funds go?</h5>
+            <div class="faq-body">50% of funds to charity; 50% to maintenance and infrastructure. We publish reports monthly.</div>
+          </div>
+          <div class="faq-item" onclick="toggleFAQ(this)" role="button" aria-expanded="false">
+            <h5>How can I pilot Arcix in my school?</h5>
+            <div class="faq-body">Apply through the Join section below or contact us directly. We prioritize schools and education partners for pilot invites.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Join -->
+    <section id="join" class="content" aria-labelledby="joinTitle">
+      <div class="wrap section-inner" style="text-align:center;">
+        <div id="joinTitle" class="section-title">Join the journey</div>
+        <div class="section-sub">We aim to be the best OS in the world — built openly and with purpose. Join the waitlist for previews, pilot invites, and development updates.</div>
+
+        <div class="contributors reveal" style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+          <div class="contributor"><h4 style="margin-top:8px">lilacviolets</h4><div style="color:var(--muted)">Founder • UI & Experience</div></div>
+          <div class="contributor"><h4 style="margin-top:8px">arimzyphr</h4><div style="color:var(--muted)">Co-Founder • Lead Dev</div></div>
+          <div class="contributor"><h4 style="margin-top:8px">Community</h4><div style="color:var(--muted)">Volunteers & contributors worldwide</div></div>
+        </div>
+
+        <div style="margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <div style="background:linear-gradient(135deg, rgba(183,143,255,0.12), rgba(102,214,255,0.06)); padding:10px 16px; border-radius:999px; border:1px solid rgba(183,143,255,0.12); font-weight:800; color:var(--purple-1)">50% → Charity</div>
+          <div style="background:linear-gradient(135deg, rgba(183,143,255,0.08), rgba(102,214,255,0.04)); padding:10px 16px; border-radius:999px; border:1px solid rgba(183,143,255,0.12); font-weight:800; color:var(--purple-1)">50% → Maintenance</div>
+        </div>
+
+        <form class="contact reveal" onsubmit="handleJoin(event)" style="margin-top:18px;">
+          <input class="input" name="name" placeholder="Your name" required aria-label="Your name">
+          <input class="input" type="email" name="email" placeholder="Email address" required aria-label="Email address">
+          <textarea name="message" placeholder="How you'd like to help or pilot details" required aria-label="Message"></textarea>
+          <div style="display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
+            <button class="btn btn-primary" type="submit">Join Waitlist</button>
+            <a class="btn btn-ghost" href="https://github.com/Arcix-OS" target="_blank" rel="noopener">View Repo</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Contact / Footer -->
+    <footer role="contentinfo">
+      <div class="wrap" style="text-align:center;">
+        <div style="font-weight:900;background:linear-gradient(90deg,var(--purple-1),var(--purple-2));-webkit-background-clip:text;background-clip:text;color:transparent;">Arcix OS</div>
+        <div style="color:var(--muted);font-size:13px;margin-top:8px;">© 2025 Arcix Foundation — In active development. 50% charity • 50% maintenance.</div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- =============== Scripts (large, intentional, feature-rich) =============== -->
+  <script>
+  /****************************************************************
+   * Arcix cinematic + site script
+   * - Comprehensive: animation orchestration, accessibility, forms,
+   *   controls, preferences, reduced-motion handling and graceful fallbacks.
+   *
+   * NOTE: This is a single-file solution. Keep Icon Dark.png in the same dir.
+   ****************************************************************/
+
+  // --- Utilities ---
+  const $ = (sel, ctx=document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+  const rand = (a,b) => Math.random()*(b-a)+a;
+  const now = () => new Date().getTime();
+
+  // --- Elements ---
+  const bootOverlay = $('#bootOverlay');
+  const glyphWrap = $('#glyphWrap');
+  const scanWrap = $('#scanWrap');
+  const scanBar = $('#scanBar');
+  const bootLog = $('#bootLog');
+  const consoleEl = $('#console');
+  const bootActions = document.getElementById('bootActions');
+  const bootControls = document.querySelector('.boot-controls');
+  const bootParticles = $('#bootParticles');
+  const siteHeader = $('#siteHeader');
+  const mainSite = $('#mainSite');
+  const wakeBtn = $('#wakeBtn');
+  const replayBootBtn = $('#replayBoot');
+  const enterSiteBtn = $('#enterSite');
+  const skipBootCheckbox = $('#skipBoot') || document.createElement('input');
+  const accessibilityBtn = $('#accessibilityBtn');
+
+  // Terminal logs to display during boot
+  const BOOT_LOGS = [
+    "Checking hardware subsystems…",
+    "Mounting secure containers…",
+    "Loading privacy modules…",
+    "Preparing local assistant (Arcix Mind)…",
+    "Starting background sync (opt-in)…",
+    "Restoring workspace layout…",
+    "Workspace ready."
+  ];
+
+  // State
+  let booting = false;
+  let glyphFloatRAF = null;
+  let startTime = 0;
+
+  // Reduced motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Respect stored preference: skip boot?
+  const skipBootPref = localStorage.getItem('arcix_skip_boot') === 'true';
+  if (skipBootPref) {
+    // user opted out; hide boot immediately, show site
+    bootOverlay.classList.add('hidden');
+    mainSite.classList.add('visible');
+    siteHeader.style.visibility = 'visible';
+    siteHeader.style.opacity = '1';
+    document.documentElement.classList.add('skip-boot');
+  }
+
+  // --- Particle system for boot overlay (flowing neon) ---
+  function spawnBootParticles(container, opts = {}) {
+    container.innerHTML = '';
+    const count = Math.max(18, Math.min(140, Math.floor(window.innerWidth / 9)));
+    for (let i=0;i<count;i++){
+      const p = document.createElement('div');
+      p.className = 'p';
+      const size = Math.round(rand(2,8));
+      p.style.width = p.style.height = size + 'px';
+      p.style.left = rand(-5,105).toFixed(2) + '%';
+      p.style.top = rand(0,100).toFixed(2) + '%';
+      p.style.opacity = (rand(0.08,0.9)).toFixed(2);
+      // subtle random blur / scale to vary the look
+      const blur = rand(0,4).toFixed(1);
+      p.style.filter = `blur(${blur}px)`;
+      container.appendChild(p);
+      animateParticle(p);
+    }
+  }
+  function animateParticle(el) {
+    if (prefersReducedMotion) return;
+    const dur = rand(8000,22000);
+    const dx = rand(-12,12);
+    el.animate([
+      { transform: `translateY(0) translateX(0)`, opacity: el.style.opacity },
+      { transform: `translateY(-110vh) translateX(${dx}vw)`, opacity: 0.05 }
+    ], { duration: dur, iterations: Infinity, easing: 'linear', delay: rand(0, dur) });
+  }
+
+  // --- Terminal outputs ---
+  function pushConsoleLine(text, delay=0, cls='term-line') {
+    const line = document.createElement('div');
+    line.className = cls;
+    line.textContent = text;
+    consoleEl.appendChild(line);
+    // reveal with a small delay for animation feel
     setTimeout(()=> {
-      pushTerminalLine("> " + l);
-      // update bootLog for accessible status
-      bootLog.style.opacity = '1';
-      bootLog.textContent = l;
-    }, t + idx * 700);
+      line.classList.add('visible');
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }, 40 + delay);
+  }
+
+  // --- Glyph stroke animation (SVG paths) ---
+  function animateGlyphStrokes(root = document) {
+    // run stroke animation on visible glyph paths
+    const paths = root.querySelectorAll('.glyph-stroke');
+    paths.forEach((p, i) => {
+      try {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = len;
+        p.style.strokeDashoffset = len;
+        p.getBoundingClientRect(); // force reflow
+        // add transition slightly staggered
+        setTimeout(()=> p.style.transition = `stroke-dashoffset 1.05s cubic-bezier(.2,.9,.2,1) ${i*0.14}s`, 20);
+        requestAnimationFrame(()=> p.style.strokeDashoffset = '0');
+      } catch (err) {
+        // SVG path might not support getTotalLength in some edge cases
+      }
+    });
+  }
+
+  // --- Glyph floating animation (requestAnimationFrame) ---
+  function startGlyphFloat() {
+    const el = glyphWrap;
+    if (!el) return;
+    let a = 0;
+    function tick(){
+      a += 0.012;
+      const y = Math.sin(a) * 6;
+      const rx = Math.sin(a * 0.7) * 2;
+      const ry = Math.cos(a * 0.5) * 2;
+      el.style.transform = `translateY(${ -18 + y }px) scale(.58) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      glyphFloatRAF = requestAnimationFrame(tick);
+    }
+    if (!glyphFloatRAF) glyphFloatRAF = requestAnimationFrame(tick);
+  }
+  function stopGlyphFloat(){
+    if (glyphFloatRAF) { cancelAnimationFrame(glyphFloatRAF); glyphFloatRAF = null; }
+  }
+
+  // --- Boot sequence orchestration ---
+  function startBootSequence({ instant=false } = {}) {
+    if (booting) return;
+    if (localStorage.getItem('arcix_skip_boot') === 'true') {
+      // If user previously opted-out, skip and show site
+      revealSite();
+      return;
+    }
+    booting = true;
+    startTime = now();
+
+    // clear previous console lines
+    consoleEl.innerHTML = '';
+    $('#termStart').classList.remove('visible'); // keep initial hidden
+
+    // prepare glyph & scan visuals
+    glyphWrap.style.opacity = '1';
+    glyphWrap.style.transform = 'scale(1) translateZ(0)';
+    if (!prefersReducedMotion) animateGlyphStrokes();
+
+    // spawn particles for boot overlay
+    spawnBootParticles(bootParticles);
+
+    // arrange console messages
+    const delayBase = instant ? 80 : 650;
+    BOOT_LOGS.forEach((m, idx) => {
+      const t = delayBase + idx * 750;
+      setTimeout(()=> {
+        pushConsoleLine(`> ${m}`, 0);
+        // update small bootLog text (hero)
+        if (bootLog) { bootLog.style.opacity = 1; bootLog.textContent = m; }
+        // reveal scan animation at first log
+        if (idx === 0 && scanWrap) {
+          scanWrap.style.opacity = 1;
+          // animate scan bar
+          scanBar.style.transition = 'transform 2.4s linear';
+          scanBar.style.transform = 'translateX(420%)';
+          // after a pause, sweep back
+          setTimeout(()=> {
+            scanBar.style.transition = 'transform 1.6s linear';
+            scanBar.style.transform = 'translateX(-20%)';
+          }, 1600);
+        }
+      }, t);
+    });
+
+    // after final log -> show action buttons and reveal hero content
+    const finishAt = delayBase + BOOT_LOGS.length * 750 + 500;
+    setTimeout(()=> {
+      if (bootLog) { bootLog.textContent = BOOT_LOGS[BOOT_LOGS.length-1]; }
+      // animated shrink of glyph (makes room for hero content)
+      glyphWrap.style.transform = 'scale(.56) translateY(-18px)';
+      // reveal "replay" and "enter" controls
+      bootActions.style.display = 'flex';
+      bootControls.style.display = 'flex';
+      // reveal hero preview logs (if present)
+      const heroLog = document.getElementById('bootLogHero');
+      const heroScanWrap = document.getElementById('scanWrapHero');
+      const heroScanBar = document.getElementById('scanBarHero');
+      if (heroLog) { heroLog.style.opacity = 1; heroLog.textContent = BOOT_LOGS[BOOT_LOGS.length-1]; }
+      if (heroScanWrap) {
+        heroScanWrap.style.opacity = 1;
+        heroScanBar.style.transition = 'transform 1.4s linear';
+        heroScanBar.style.transform = 'translateX(-20%)';
+      }
+      // start subtle float
+      if (!prefersReducedMotion) startGlyphFloat();
+      booting = false;
+    }, finishAt);
+  }
+
+  // --- Reveal site (fade out boot overlay, show header & main content) ---
+  function revealSite() {
+    stopGlyphFloat();
+    bootOverlay.classList.add('hidden');
+    // ensure header and main content are visible after overlay fades
+    setTimeout(()=> {
+      siteHeader.style.visibility = 'visible';
+      siteHeader.style.opacity = '1';
+      mainSite.classList.add('visible');
+      // ensure focus is set for accessibility
+      try { mainSite.focus(); } catch(e){}
+    }, 300);
+  }
+
+  // --- Toggle skip boot preference ---
+  function setSkipBootPref(enabled) {
+    localStorage.setItem('arcix_skip_boot', enabled ? 'true' : 'false');
+  }
+
+  // --- Accessibility toggles (example shows a small preference) ---
+  function toggleAccessibility() {
+    // In a full app this would open a UI; here we toggle reduced-motion flag simulation for demo
+    const msg = prefersReducedMotion ? "Your OS requests reduced motion — the page respects that." : "Accessibility menu (demo): reduced motion is respected.";
+    alert(msg);
+  }
+
+  // --- FAQ toggle helper ---
+  function toggleFAQ(el) {
+    const body = el.querySelector('.faq-body');
+    const expanded = el.getAttribute('aria-expanded') === 'true';
+    if (!body) return;
+    if (expanded) {
+      body.style.display = 'none';
+      el.setAttribute('aria-expanded', 'false');
+    } else {
+      body.style.display = 'block';
+      el.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  // --- Demo simulation actions (simple transient UI feedback) ---
+  window.simulateAction = function(action) {
+    const cw = document.getElementById('workspaceCanvas');
+    if(!cw) return;
+    const original = cw.innerHTML;
+    if (action === 'open') {
+      cw.innerHTML = '<div style="font-weight:900;color:var(--purple-1)">Opening Project…</div><div style="color:var(--muted)">Unpacking assets • restoring layout</div>';
+    } else if (action === 'settings') {
+      cw.innerHTML = '<div style="font-weight:900;color:var(--purple-1)">System Settings</div><div style="color:var(--muted)">Display • Privacy • Arcix Mind</div>';
+    } else {
+      cw.innerHTML = '<div style="font-weight:900;color:var(--purple-1)">Arcix Mind</div><div style="color:var(--muted)">Summarizing notes locally…</div>';
+    }
+    setTimeout(()=> cw.innerHTML = original, 900);
+  };
+
+  // --- Join form simulated handler ---
+  function handleJoin(e) {
+    e.preventDefault();
+    const f = e.target;
+    const name = f.name?.value?.trim() || 'friend';
+    const email = f.email?.value?.trim() || '';
+    const message = f.message?.value?.trim() || '';
+    // minimal validation
+    if (!email.includes('@')) {
+      alert('Please provide a valid email address.');
+      return;
+    }
+    const submitBtn = f.querySelector('button[type="submit"]');
+    const originalText = submitBtn ? submitBtn.textContent : '';
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+    setTimeout(()=> {
+      if (submitBtn) { submitBtn.textContent = '✓ Submitted'; }
+      alert(`Thanks ${name}! We received your request. We'll reach you at ${email} with pilot invites and previews.`);
+      if (submitBtn) { submitBtn.textContent = originalText; submitBtn.disabled = false; }
+      f.reset();
+    }, 900);
+  }
+  window.handleJoin = handleJoin;
+
+  // --- Contact form binding (delegated) ---
+  document.addEventListener('submit', (ev) => {
+    if (ev.target && ev.target.classList.contains('contact')) {
+      handleJoin(ev);
+    }
   });
 
-  // second stage: animate scan bar
-  setTimeout(()=> {
-    scanBar.style.transition = 'transform 1.6s linear';
-    scanBar.style.transform = 'translateX(-20%)';
-  }, t + 700);
-
-  // finish sequence and enter looped visual state
-  const finishAt = t + LOGS.length * 700 + 1200;
-  setTimeout(()=> {
-    // final state
-    bootLog.textContent = "Workspace ready.";
-    // shrink glyph slightly for pleasing composition
-    glyphWrap.style.transform = 'scale(.64) translateY(-22px)';
-    // fade scan
-    scanWrap.style.opacity = '0';
-    // terminal keep last lines visible
-    pushTerminalLine("> Arcix online — enjoy the cinematic experience");
-    // enable controls
-    wakeBtn.disabled = false;
-    replayBtn.disabled = false;
-    booting = false;
-  }, finishAt);
-}
-
-/* replay */
-replayBtn.addEventListener('click', () => {
-  startBoot();
-});
-
-/* wake button */
-wakeBtn.addEventListener('click', () => {
-  startBoot();
-});
-
-/* keyboard replay (space) */
-window.addEventListener('keydown', (e) => {
-  if(e.code === 'Space'){ e.preventDefault(); startBoot(); }
-});
-
-/* auto-run on load */
-window.addEventListener('load', () => {
-  // small delay for cinematic
-  setTimeout(startBoot, 420);
-  // init particles
-  spawnParticles();
-});
-
-/* ========== Particles (flowing) ========== */
-let particleIds = [];
-function spawnParticles(){
-  const count = Math.max(20, Math.min(80, Math.floor(window.innerWidth / 12)));
-  const frag = document.createDocumentFragment();
-  for(let i=0;i<count;i++){
-    const p = createEl('div','particle');
-    const size = Math.round(rand(2,9));
-    p.style.width = p.style.height = size + 'px';
-    p.style.left = (rand(-5,105)).toFixed(2) + '%';
-    p.style.top  = (rand(0,100)).toFixed(2) + '%';
-    p.style.opacity = (rand(0.06,0.7)).toFixed(2);
-    p.style.transform = `translateY(${rand(0,80)}vh) scale(${rand(0.4,1.1)})`;
-    frag.appendChild(p);
-    animateParticle(p, i);
-  }
-  particlesRoot.appendChild(frag);
-}
-
-function animateParticle(el, idx){
-  // each particle will float along a bezier (simulated via translate)
-  const dur = rand(8000,18000);
-  const delay = rand(0,6000);
-  el.animate([
-    { transform: `translateY(${rand(20,120)}vh) translateX(0)`, opacity: el.style.opacity },
-    { transform: `translateY(-40vh) translateX(${rand(-12,12)}vw)`, opacity: 0.05 }
-  ], {
-    duration: dur,
-    delay: delay,
-    iterations: Infinity,
-    easing: 'linear'
+  // --- Boot overlay control bindings ---
+  // Replay: restart boot cinematic
+  replayBootBtn.addEventListener('click', () => {
+    bootActions.style.display = 'none';
+    bootControls.style.display = 'none';
+    // clear console
+    consoleEl.innerHTML = '';
+    // reset visuals
+    const allTermLines = $$('.term-line');
+    allTermLines.forEach(n => n.classList.remove('visible'));
+    // restart
+    startBootSequence({ instant:false });
   });
-}
 
-/* ========== reduced motion handling ========== */
-(function reduceMotion(){
-  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if(mq.matches){
-    // stop CSS transitions by setting small durations (some already handled by CSS media)
-    document.querySelectorAll('.particle').forEach(p => p.style.animation = 'none');
+  // Enter site: fade overlay and show site
+  enterSiteBtn.addEventListener('click', () => {
+    if (skipBootCheckbox.checked) {
+      setSkipBootPref(true);
+    }
+    revealSite();
+  });
+
+  // nav wake button replay
+  if (wakeBtn) {
+    wakeBtn.addEventListener('click', () => {
+      // show overlay again
+      bootOverlay.classList.remove('hidden');
+      siteHeader.style.visibility = 'hidden';
+      siteHeader.style.opacity = '0';
+      mainSite.classList.remove('visible');
+      // small delay to let overlay be visible
+      setTimeout(()=> {
+        // reset console and visuals
+        consoleEl.innerHTML = '';
+        $('#termStart').classList.remove('visible');
+        bootActions.style.display = 'none';
+        bootControls.style.display = 'none';
+        // restart boot
+        startBootSequence();
+      }, 180);
+      // scroll to top for context
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   }
-})();
 
-/* keep layout responsive: reset particles on resize */
-let _resizeTimer = null;
-window.addEventListener('resize', () => {
-  clearTimeout(_resizeTimer);
-  _resizeTimer = setTimeout(()=> {
-    // clear existing particles and respawn
-    particlesRoot.innerHTML = '';
-    spawnParticles();
-  }, 200);
-});
+  // Accessibility toggle
+  if (accessibilityBtn) accessibilityBtn.addEventListener('click', toggleAccessibility);
 
-/* ensure terminal scroll area stays near bottom as lines added */
-const observer = new MutationObserver(() => { terminal.scrollTop = terminal.scrollHeight; });
-observer.observe(terminal, { childList: true });
+  // Skip boot checkbox binding (the one inside overlay)
+  const localSkip = $('#skipBoot');
+  if (localSkip) {
+    localSkip.checked = localStorage.getItem('arcix_skip_boot') === 'true';
+    localSkip.addEventListener('change', (e)=> {
+      setSkipBootPref(e.target.checked);
+    });
+  }
 
-</script>
+  // Replay keyboard shortcut (Space) + A toggles accessibility prompt + S toggles skip preference
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+      // prevent default page scroll on space when overlay visible
+      if (!bootOverlay.classList.contains('hidden')) {
+        e.preventDefault();
+        replayBootBtn.click();
+      }
+    } else if (e.key.toLowerCase() === 'a') {
+      accessibilityBtn && accessibilityBtn.click();
+    } else if (e.key.toLowerCase() === 's') {
+      if (localSkip) {
+        localSkip.checked = !localSkip.checked;
+        setSkipBootPref(localSkip.checked);
+      }
+    }
+  });
+
+  // --- Reveal observer for content reveal animations ---
+  (function attachRevealObserver(){
+    const els = $$('.reveal');
+    if (!els.length) return;
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(el => io.observe(el));
+  })();
+
+  // --- Glyph parallax pointer effect ---
+  (function glyphParallax(){
+    const wrap = glyphWrap;
+    if (!wrap) return;
+    function rect() { return wrap.getBoundingClientRect(); }
+    let lastX = 0, lastY = 0;
+    window.addEventListener('pointermove', (e) => {
+      const r = rect();
+      const cx = r.left + r.width/2;
+      const cy = r.top + r.height/2;
+      const dx = (e.clientX - cx) / (r.width/2);
+      const dy = (e.clientY - cy) / (r.height/2);
+      const tiltX = Math.max(-8, Math.min(8, -dy*6));
+      const tiltY = Math.max(-8, Math.min(8, dx*6));
+      lastX += (tiltY - lastX) * 0.12;
+      lastY += (tiltX - lastY) * 0.12;
+      wrap.style.transform = `scale(.58) translateY(-18px) rotateX(${lastY}deg) rotateY(${lastX}deg)`;
+    }, { passive: true });
+  })();
+
+  // --- Respect reduced motion on load ---
+  (function respectReducedMotion(){
+    if (prefersReducedMotion) {
+      // remove animations that would be jarring
+      $$('.p').forEach(p => p.style.animation = 'none');
+      $$('.glyph-stroke').forEach(p => { p.style.strokeDashoffset = 0; p.style.transition = 'none'; });
+    }
+  })();
+
+  // --- On load: if user did not skip, run boot -->
+  window.addEventListener('load', () => {
+    // if the overlay is hidden because user pref skipped, we already revealed the site
+    if (bootOverlay.classList.contains('hidden')) {
+      // ensure header & site visible
+      siteHeader.style.visibility = 'visible';
+      siteHeader.style.opacity = '1';
+      mainSite.classList.add('visible');
+      return;
+    }
+
+    // show header hidden initially; will be revealed after overlay fades
+    siteHeader.style.visibility = 'hidden';
+    siteHeader.style.opacity = '0';
+
+    // start the cinematic (non-instant)
+    startBootSequence({ instant:false });
+
+    // make console accessible: reveal the "starter" line later for legibility
+    setTimeout(()=> {
+      const ts = $('#termStart');
+      if (ts) ts.classList.add('visible');
+    }, 600);
+
+    // ensure overlay action buttons become visible at the end, and enable scanning effects on the hero preview
+    setTimeout(()=> {
+      // enable action visibility (in case the boot logic hasn't already)
+      bootActions.style.display = 'flex';
+      bootControls.style.display = 'flex';
+      // show site header & main content only when user chooses "Enter Site"
+      // (we don't auto-collapse overlay into site here)
+    }, BOOT_LOGS.length * 800 + 1200);
+  });
+
+  // --- Window resize handling: respawn particles to keep density consistent ---
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(()=> spawnBootParticles(bootParticles), 220);
+  });
+
+  // --- Small keyboard focus aids for accessibility: trap focus inside overlay while visible ---
+  (function focusTrapForOverlay(){
+    let lastFocused = null;
+    document.addEventListener('focusin', (e) => {
+      if (!bootOverlay.classList.contains('hidden')) {
+        // overlay is visible: if focused element is outside overlay, redirect focus to overlay
+        if (!bootOverlay.contains(e.target)) {
+          lastFocused = e.target;
+          const primary = enterSiteBtn || replayBootBtn || bootOverlay.querySelector('.boot-logo');
+          primary && primary.focus();
+        }
+      } else {
+        // overlay hidden: restore focus to previous if any
+        if (lastFocused) { try{ lastFocused.focus(); } catch(err){} lastFocused = null; }
+      }
+    });
+  })();
+
+  // --- Helper: toggle FAQ (global) for inline onclick binding usage ---
+  window.toggleFAQ = function(el) {
+    const body = el.querySelector('.faq-body');
+    if (!body) return;
+    const expanded = el.getAttribute('aria-expanded') === 'true';
+    if (expanded) {
+      body.style.display = 'none';
+      el.setAttribute('aria-expanded', 'false');
+    } else {
+      body.style.display = 'block';
+      el.setAttribute('aria-expanded', 'true');
+    }
+  };
+
+  // --- Expose small API for console debugging in dev (safe) ---
+  window.Arcix = {
+    startBoot: () => startBootSequence({ instant:false }),
+    revealSite: revealSite,
+    setSkipBoot: (b) => setSkipBootPref(Boolean(b))
+  };
+
+  // --- End script ---
+  </script>
 </body>
 </html>
