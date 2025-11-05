@@ -4,13 +4,12 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Arcix OS — A new generation of operating systems.</title>
-<meta name="description" content="Arcix OS — privacy-first, community-funded, cinematic OS experience. Founded by lilacviolets & arimzyphr." />
+<meta name="description" content="Arcix OS — privacy-first, community-funded, cinematic OS experience. In active development by lilacviolets & arimzyphr. 50% charity • 50% maintenance." />
 <link rel="icon" href="Icon Dark.png" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#000000;
-  --bg-2:#050505;
   --fg:#e8fff0;
   --muted:#9fbfb0;
   --accent:#00ff88;
@@ -22,35 +21,33 @@
   --max:1400px;
   --ease:cubic-bezier(.2,.9,.2,1);
   --nav-h:80px;
-  --film: rgba(0,0,0,0.26);
 }
 
 /* Reset */
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{height:100%;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
 body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;line-height:1.45;overflow-x:hidden;scroll-behavior:smooth}
 a{color:var(--accent);text-decoration:none}
 img{max-width:100%;display:block}
 
-/* ambient */
-:root{ --ambient-op: 0.9 }
+/* Ambient cinematic background */
 body::before{
   content:"";
   position:fixed;inset:-30%;z-index:0;pointer-events:none;
   background:
-    radial-gradient(1000px 600px at 12% 18%, rgba(0,255,136,0.04), transparent 8%),
-    radial-gradient(700px 480px at 88% 82%, rgba(0,255,136,0.025), transparent 8%),
+    radial-gradient(1000px 600px at 12% 18%, rgba(0,255,136,0.05), transparent 8%),
+    radial-gradient(700px 480px at 88% 82%, rgba(0,255,136,0.03), transparent 8%),
     linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.9));
   mix-blend-mode:screen;
-  animation:ambientDrift 30s ease-in-out infinite;
-  opacity:var(--ambient-op);
+  animation:ambientDrift 28s ease-in-out infinite;
+  opacity:0.94;
 }
 @keyframes ambientDrift{0%,100%{transform:translate(0,0)}33%{transform:translate(-3%,2%)}66%{transform:translate(3%,-2%)}}
 
-/* layout */
+/* Layout */
 .wrap{max-width:var(--max);margin:0 auto;padding:0 24px;position:relative;z-index:40}
-header.site{position:fixed;inset:0 0 auto 0;height:var(--nav-h);display:flex;align-items:center;z-index:200;background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.08));backdrop-filter: blur(14px) saturate(140%);border-bottom:1px solid rgba(0,255,136,0.04);transition:all .45s var(--ease)}
-header.site.scrolled{background:linear-gradient(180deg, rgba(0,0,0,0.75), rgba(0,0,0,0.52));box-shadow:0 30px 100px rgba(0,255,136,0.06);border-bottom-color:rgba(0,255,136,0.09)}
+header.site{position:fixed;inset:0 0 auto 0;height:var(--nav-h);display:flex;align-items:center;z-index:220;background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.08));backdrop-filter: blur(14px) saturate(140%);border-bottom:1px solid rgba(0,255,136,0.04);transition:all .45s var(--ease)}
+header.site.scrolled{background:linear-gradient(180deg, rgba(0,0,0,0.78), rgba(0,0,0,0.52));box-shadow:0 30px 100px rgba(0,255,136,0.06);border-bottom-color:rgba(0,255,136,0.09)}
 .nav{display:flex;align-items:center;justify-content:space-between;width:100%;gap:12px;padding:0 20px}
 .brand{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
 .mini{width:56px;height:56px;border-radius:12px;padding:8px;background:linear-gradient(135deg,#000,#0a0a0a);border:1px solid rgba(0,255,136,0.12);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,255,136,0.04), inset 0 1px 0 rgba(255,255,255,0.02);position:relative;overflow:hidden}
@@ -68,9 +65,24 @@ nav.links a:hover{color:var(--accent);transform:translateY(-2px);background:rgba
 .particle{position:absolute;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);opacity:0;animation:rise 16s linear infinite}
 @keyframes rise{0%{transform:translateY(120vh) scale(.2);opacity:0}6%{opacity:.6}90%{opacity:.25}100%{transform:translateY(-140vh) scale(1)}}
 
-/* HERO / BOOT cinematic card */
+/* Buttons with working animations */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;font-weight:800;border:none;cursor:pointer;transition:transform .28s var(--ease),box-shadow .28s var(--ease),opacity .2s linear;position:relative;overflow:hidden;background:transparent;color:var(--fg)
+}
+.btn::after{
+  /* subtle overlay ripple using scale transform — ensures hover visual works on all browsers */
+  content:"";position:absolute;inset:0;border-radius:999px;transform:scale(0);background:linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));transition:transform .45s var(--ease);pointer-events:none;opacity:.9;
+}
+.btn:hover::after{transform:scale(1.06)}
+.btn:active{transform:translateY(1px) scale(.995)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#001a0f;box-shadow:0 12px 48px rgba(0,255,136,0.12)}
+.btn-primary:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 20px 80px rgba(0,255,136,0.18)}
+.btn-ghost{background:transparent;border:2px solid rgba(0,255,136,0.12);color:var(--accent);backdrop-filter:blur(6px)}
+.btn-ghost:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,255,136,0.06);border-color:rgba(0,255,136,0.22)}
+
+/* Hero / boot cinematic card */
 main{position:relative;z-index:20}
-.hero{min-height:110vh;padding-top:calc(var(--nav-h) + 26px);display:flex;align-items:center;justify-content:center;position:relative;text-align:center;perspective:1400px}
+.hero{min-height:120vh;padding-top:calc(var(--nav-h) + 26px);display:flex;align-items:center;justify-content:center;position:relative;text-align:center;perspective:1400px}
 .hero-inner{max-width:1200px;margin:0 auto;padding:40px 20px;display:grid;gap:22px;align-items:center;justify-items:center}
 .boot-card{width:920px;max-width:96vw;border-radius:26px;padding:28px;background:linear-gradient(180deg, rgba(6,6,6,0.86), rgba(12,12,12,0.7));border:1px solid rgba(0,255,136,0.04);box-shadow:0 60px 160px rgba(0,255,136,0.03), inset 0 1px 0 rgba(255,255,255,0.02);overflow:hidden;position:relative;transform-style:preserve-3d}
 .boot-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
@@ -94,12 +106,12 @@ main{position:relative;z-index:20}
 .scan-bar{height:100%;width:8%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transform:translateX(-140%);will-change:transform}
 .boot-msg{color:var(--muted);font-weight:700;letter-spacing:1px;margin-top:14px;opacity:0}
 
-/* subtle UI after boot */
+/* hero content after boot */
 .hero-title{font-weight:900;font-size:clamp(2.2rem,6.5vw,4.6rem);line-height:0.95;margin:10px 0;color:transparent;background:linear-gradient(90deg,var(--accent),var(--accent-2),#fff);-webkit-background-clip:text;background-clip:text;text-shadow:0 0 80px rgba(0,255,136,0.08)}
 .hero-sub{color:var(--muted);max-width:920px;margin:0 auto;font-size:1.05rem}
 .hero-actions{display:flex;gap:14px;justify-content:center;margin-top:14px;flex-wrap:wrap}
 
-/* long engaging sections */
+/* long sections */
 .content{padding:96px 20px;position:relative;z-index:20}
 .section-inner{max-width:var(--max);margin:0 auto}
 .section-title{font-size:2.4rem;font-weight:900;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:12px}
@@ -107,22 +119,19 @@ main{position:relative;z-index:20}
 
 /* features grid */
 .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.feature{
-  background:linear-gradient(180deg, rgba(6,6,6,0.78), rgba(10,10,10,0.6));
-  border-radius:14px;padding:20px;border:1px solid rgba(0,255,136,0.06);transition:transform .36s var(--ease),box-shadow .36s var(--ease);
-}
+.feature{background:linear-gradient(180deg, rgba(6,6,6,0.78), rgba(10,10,10,0.6));border-radius:14px;padding:20px;border:1px solid rgba(0,255,136,0.06);transition:transform .36s var(--ease),box-shadow .36s var(--ease)}
 .feature:hover{transform:translateY(-10px);box-shadow:0 30px 90px rgba(0,255,136,0.04);border-color:rgba(0,255,136,0.12)}
 .feature h4{color:var(--accent);margin:0 0 10px}
 .feature p{color:var(--muted);font-size:.98rem;line-height:1.6}
 
-/* interactive demo stage */
+/* demo stage */
 .demo-stage{margin-top:28px;border-radius:14px;padding:18px;background:linear-gradient(180deg,#060606,#0a0a0a);border:1px solid rgba(0,255,136,0.04);display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
 .demo-left{background:linear-gradient(180deg,#040404,#0a0a0a);border-radius:12px;padding:14px;min-height:240px;display:flex;flex-direction:column;gap:12px}
 .desktop-window{flex:1;border-radius:10px;background:linear-gradient(180deg,#050505,#0a0a0a);display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;border:1px solid rgba(255,255,255,0.02)}
 .demo-right{display:flex;flex-direction:column;gap:10px}
 .demo-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-/* testimonials / stats */
+/* testimonials & stats */
 .testimonials{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:start;margin-top:24px}
 .test-card{background:linear-gradient(180deg,#060606,#0a0a0a);padding:18px;border-radius:12px;border:1px solid rgba(0,255,136,0.04)}
 .stat{background:linear-gradient(180deg,#070707,#090909);padding:18px;border-radius:12px;border:1px solid rgba(0,255,136,0.04);text-align:center}
@@ -148,7 +157,7 @@ footer{padding:48px 20px;color:var(--muted);text-align:center;border-top:1px sol
 .reveal{opacity:0;transform:translateY(36px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
 .visible{opacity:1;transform:none}
 
-/* micro */
+/* small */
 .scroll-indicator{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--accent);font-size:.85rem;font-weight:800;opacity:.8}
 @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(10px)}}
 
@@ -180,10 +189,10 @@ footer{padding:48px 20px;color:var(--muted);text-align:center;border-top:1px sol
 <body>
   <div class="particles" aria-hidden="true"></div>
 
-  <header class="site" role="banner" aria-label="Main navigation">
+  <header class="site" role="banner" aria-label="Primary navigation">
     <div class="wrap nav" role="navigation">
-      <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-        <div class="mini" aria-hidden="true"><img src="Icon Dark.png" alt="Arcix logo" style="width:100%;height:100%;object-fit:contain"></div>
+      <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-hidden="true">
+        <div class="mini"><img src="Icon Dark.png" alt="Arcix logo" style="width:100%;height:100%;object-fit:contain"></div>
         <div><div class="title">Arcix</div></div>
       </div>
 
@@ -198,18 +207,19 @@ footer{padding:48px 20px;color:var(--muted);text-align:center;border-top:1px sol
   </header>
 
   <main>
+    <!-- HERO / BOOT -->
     <section class="hero" aria-label="Arcix boot cinematic">
       <div class="hero-inner wrap">
         <div style="display:grid;gap:8px;align-items:center;justify-items:center">
-          <div id="introBadge" style="font-weight:700;color:var(--muted);font-size:.95rem;letter-spacing:1px">Arcix OS</div>
-          <div id="introTag" style="font-weight:900;font-size:1.2rem;color:transparent;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text">A new generation of operating systems.</div>
+          <div style="font-weight:700;color:var(--muted);font-size:.95rem;letter-spacing:1px">Arcix OS — In active development</div>
+          <div style="font-weight:900;font-size:1.2rem;color:transparent;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text">A new generation of operating systems.</div>
         </div>
 
         <div class="boot-card" id="bootCard" role="region" aria-label="Arcix boot preview">
           <div class="boot-top">
             <div class="dots"><div class="small-dot"></div><div class="small-dot"></div><div class="small-dot"></div></div>
             <div style="flex:1"></div>
-            <div class="boot-meta">v0.5-beta</div>
+            <div class="boot-meta">development preview • v0.5</div>
           </div>
 
           <div class="boot-screen" id="bootScreen">
@@ -230,17 +240,17 @@ footer{padding:48px 20px;color:var(--muted);text-align:center;border-top:1px sol
 
             <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:6">
               <div class="scan-wrap" id="scanWrap" aria-hidden="true"><div class="scan-bar" id="scanBar"></div></div>
-              <div class="boot-msg" id="bootMsg" aria-hidden="true">Initializing… loading modules… preparing workspace</div>
+              <div class="boot-msg" id="bootMsg" aria-hidden="true">Initializing — local services loading… preparing workspace</div>
             </div>
           </div>
         </div>
 
         <div id="heroContent" style="opacity:0;transform:translateY(18px);transition:opacity .9s var(--ease),transform .9s var(--ease);width:100%;max-width:880px;margin-top:8px">
           <h1 class="hero-title" id="mainTitle">A new generation of operating systems.</h1>
-          <p class="hero-sub">Privacy-first. Community-funded. Designed by <strong>lilacviolets</strong> and built with <strong>arimzyphr</strong>. Arcix wakes up like a story — explore, learn, and build with care.</p>
+          <p class="hero-sub">Privacy-first. Community-funded. Built by people who care — led by <strong>lilacviolets</strong> (founder, UI) and <strong>arimzyphr</strong> (co-founder, lead dev). Arcix is a passion project: 50% of funds go to charity, 50% to maintenance & infrastructure. No developer salaries — it’s community-driven and charitable.</p>
           <div class="hero-actions">
-            <a class="cta btn-primary" href="https://github.com/Arcix-OS" target="_blank" rel="noopener" style="text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#001a0f;box-shadow:0 12px 40px rgba(0,255,136,0.12)">Contribute on GitHub</a>
-            <button class="cta btn-ghost" id="pilotBtn" style="padding:12px 22px;border-radius:999px;border:2px solid rgba(0,255,136,0.12);font-weight:800;color:var(--accent);backdrop-filter:blur(6px)">Request a School Pilot</button>
+            <a class="btn btn-primary" href="https://github.com/Arcix-OS" target="_blank" rel="noopener">Contribute on GitHub</a>
+            <button class="btn btn-ghost" id="pilotBtn">Request a School Pilot</button>
           </div>
         </div>
       </div>
@@ -250,131 +260,123 @@ footer{padding:48px 20px;color:var(--muted);text-align:center;border-top:1px sol
       </div>
     </section>
 
+    <!-- FEATURES -->
     <section id="features" class="content">
       <div class="section-inner wrap">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
           <div>
             <div class="section-title">What makes Arcix special</div>
-            <div class="section-sub">A cinematic OS that balances beginner clarity with expert power — privacy by design, classroom-ready, and community-run.</div>
+            <div class="section-sub">A cinematic OS that balances beginner clarity with expert power — privacy by design, classroom-ready, and community-run. We're in active development; features will evolve with testing and community feedback.</div>
           </div>
           <div style="width:320px">
             <div style="background:linear-gradient(180deg,#070707,#0a0a0a);padding:12px;border-radius:12px;border:1px solid rgba(0,255,136,0.04)">
-              <div style="font-weight:800;color:var(--accent)">Arcix Mind</div>
-              <div style="color:var(--muted);margin-top:8px">Local summarization, workflow suggestions, safe automations — all opt-in.</div>
+              <div style="font-weight:800;color:var(--accent)">Arcix Mind (optional)</div>
+              <div style="color:var(--muted);margin-top:8px">On-device summarization & workflow help. Cloud features are explicit opt-in only.</div>
             </div>
           </div>
         </div>
 
         <div class="features-grid reveal" style="margin-top:20px">
-          <div class="feature">
-            <h4>Unified Workspace</h4><p>Context-aware layouts, floating windows, and persistent workspaces that move with you.</p>
-          </div>
-          <div class="feature">
-            <h4>Arcix Connect</h4><p>High-quality calls & messaging over Wi-Fi with end-to-end encryption and cross-device handoff.</p>
-          </div>
-          <div class="feature">
-            <h4>Education Tools</h4><p>Teacher dashboards, offline bundles, and pilot tooling for low-cost deployments.</p>
-          </div>
-          <div class="feature">
-            <h4>App Compatibility</h4><p>Run Android apps, PWAs, and isolated containers for advanced desktop apps.</p>
-          </div>
-          <div class="feature">
-            <h4>Community Funding</h4><p>Transparent grants and bounties that sustain maintainers and pilots.</p>
-          </div>
-          <div class="feature">
-            <h4>Security</h4><p>Per-app permissions, verified boot, encrypted vaults, and minimal telemetry.</p>
-          </div>
+          <div class="feature"><h4>Unified Workspace</h4><p>Context-aware layouts, floating windows, and persistent workspaces across devices.</p></div>
+          <div class="feature"><h4>Arcix Connect</h4><p>Wi-Fi-first calls & messaging with encrypted handoff between your devices (in development & pilot testing).</p></div>
+          <div class="feature"><h4>Education Tools</h4><p>Teacher dashboards, offline bundles, and pilot tooling designed for low-cost deployments.</p></div>
+          <div class="feature"><h4>Compatibility</h4><p>Android apps, PWAs, and containers for more advanced desktop apps — working toward wide compatibility.</p></div>
+          <div class="feature"><h4>Community Funding</h4><p>50% of funds go to charity; 50% to maintenance & infrastructure. We publish funding reports for transparency.</p></div>
+          <div class="feature"><h4>Security & Privacy</h4><p>Per-app permissions, verified boot, encrypted vaults, and strictly minimal telemetry.</p></div>
         </div>
-
-        <div id="demo" class="reveal" style="margin-top:36px">
-          <div class="demo-stage">
-            <div class="demo-left">
-              <div style="display:flex;align-items:center;gap:12px">
-                <div style="width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px var(--accent)"></div>
-                <div style="font-weight:800;color:var(--muted)">Live demo — simulated workspace</div>
-                <div style="flex:1"></div>
-                <div style="font-weight:700;color:var(--muted)">Preview</div>
-              </div>
-              <div class="desktop-window" id="desktopWindow" style="margin-top:12px">
-                <div id="workspaceCanvas" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-                  <div style="font-weight:900;color:var(--accent)">Arcix Workspace</div>
-                  <div style="color:var(--muted)">Open projects • Notes • Arcix Mind</div>
-                </div>
-              </div>
-              <div style="display:flex;gap:10px;margin-top:10px" class="demo-actions">
-                <button class="btn btn-primary" onclick="simulateAction('open')">Open Project</button>
-                <button class="btn btn-ghost" onclick="simulateAction('settings')">System Settings</button>
-                <button class="btn btn-ghost" onclick="simulateAction('mind')">Ask Arcix Mind</button>
-              </div>
-            </div>
-
-            <div class="demo-right">
-              <div style="background:linear-gradient(180deg,#070707,#0a0a0a);padding:12px;border-radius:10px;border:1px solid rgba(0,255,136,0.04)">
-                <div style="font-weight:800;color:var(--accent)">Arcix Mind Snapshot</div>
-                <div style="color:var(--muted);margin-top:8px">Summaries, context suggestions, and safe automations running locally.</div>
-              </div>
-              <div style="background:linear-gradient(180deg,#060606,#090909);padding:12px;border-radius:10px;border:1px solid rgba(0,255,136,0.04);display:flex;flex-direction:column;gap:8px">
-                <div style="font-weight:800;color:var(--accent)">Try commands</div>
-                <ol style="color:var(--muted);margin:0 0 0 18px">
-                  <li>Open notes → Summarize</li>
-                  <li>Export project → Package</li>
-                  <li>Teacher mode → Push assignment</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </section>
 
-    <section id="impact" class="content">
+    <!-- DEMO / INTERACTIVE -->
+    <section id="demo" class="content">
       <div class="section-inner wrap">
-        <div class="testimonials reveal">
-          <div class="test-card">
+        <div class="section-title">Experience the feel (simulated)</div>
+        <div class="section-sub">A short interactive preview of core flows — simulated for the website. Real behavior is available in preview builds for pilot partners.</div>
+
+        <div class="demo-stage reveal">
+          <div class="demo-left">
             <div style="display:flex;align-items:center;gap:12px">
-              <div style="width:56px;height:56px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-2));"></div>
-              <div>
-                <div style="font-weight:900">Arcix in classrooms</div>
-                <div style="color:var(--muted)">“Arcix helped our district deploy offline lessons to hundreds of students.”</div>
+              <div style="width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px var(--accent)"></div>
+              <div style="font-weight:800;color:var(--muted)">Simulated workspace</div>
+              <div style="flex:1"></div>
+              <div style="font-weight:700;color:var(--muted)">Preview</div>
+            </div>
+
+            <div class="desktop-window" id="desktopWindow" style="margin-top:12px">
+              <div id="workspaceCanvas" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+                <div style="font-weight:900;color:var(--accent)">Arcix Workspace (demo)</div>
+                <div style="color:var(--muted)">This is a development preview — behavior and UI will improve with pilot testing.</div>
               </div>
             </div>
-            <div style="margin-top:12px;color:var(--muted)">Real pilot reports, transparent funding, and a community that pays contributors for meaningful work.</div>
-            <div style="display:flex;gap:8px;margin-top:12px">
-              <div class="stat" style="flex:1"><div style="font-weight:900;font-size:1.6rem;color:var(--accent)">120+</div><div style="color:var(--muted)">Pilot schools</div></div>
-              <div class="stat" style="flex:1"><div style="font-weight:900;font-size:1.6rem;color:var(--accent)">2.1k</div><div style="color:var(--muted)">Contributors</div></div>
+
+            <div style="display:flex;gap:10px;margin-top:10px" class="demo-actions">
+              <button class="btn btn-primary" onclick="simulateAction('open')">Open Project</button>
+              <button class="btn btn-ghost" onclick="simulateAction('settings')">System Settings</button>
+              <button class="btn btn-ghost" onclick="simulateAction('mind')">Ask Arcix Mind</button>
             </div>
+          </div>
+
+          <div class="demo-right">
+            <div style="background:linear-gradient(180deg,#070707,#0a0a0a);padding:12px;border-radius:10px;border:1px solid rgba(0,255,136,0.04)">
+              <div style="font-weight:800;color:var(--accent)">Arcix Mind — local by default</div>
+              <div style="color:var(--muted);margin-top:8px">Runs locally by default; cloud features will require explicit opt-in and clear documentation.</div>
+            </div>
+
+            <div style="background:linear-gradient(180deg,#060606,#090909);padding:12px;border-radius:10px;border:1px solid rgba(0,255,136,0.04);display:flex;flex-direction:column;gap:8px">
+              <div style="font-weight:800;color:var(--accent)">Try commands</div>
+              <ol style="color:var(--muted);margin:0 0 0 18px">
+                <li>Open notes → Summarize</li>
+                <li>Export project → Package</li>
+                <li>Teacher mode → Push assignment</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMPACT & TRANSPARENCY -->
+    <section id="vision" class="content">
+      <div class="section-inner wrap">
+        <div class="section-title">Mission & Transparency</div>
+        <div class="section-sub">Arcix is built from passion. Our aim: create an exceptional OS that benefits learners and creators. Financial policy is simple and public.</div>
+
+        <div class="testimonials reveal" style="margin-top:14px">
+          <div class="test-card">
+            <div style="display:flex;gap:12px;align-items:center">
+              <div style="width:56px;height:56px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-2));"></div>
+              <div>
+                <div style="font-weight:900">Development & Pilots — ongoing</div>
+                <div style="color:var(--muted)">We run small pilots, collect user feedback, and improve iteratively. Results and performance claims will be published once verified.</div>
+              </div>
+            </div>
+            <div style="margin-top:12px;color:var(--muted)">Financial policy: <strong>50% of funds to charity</strong>, <strong>50% to maintenance & infrastructure</strong> (hosting, builds, security, archives). No developer salaries — Arcix is a volunteer & community passion project.</div>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:12px">
-            <div class="stat"><div style="font-weight:900;font-size:1.8rem;color:var(--accent)">99ms</div><div style="color:var(--muted)">Average app resume</div></div>
-            <div class="stat"><div style="font-weight:900;font-size:1.8rem;color:var(--accent)">100% local</div><div style="color:var(--muted)">Arcix Mind optional offline</div></div>
+            <div class="stat"><div style="font-weight:900;font-size:1.4rem;color:var(--accent)">Open & Honest</div><div style="color:var(--muted)">We publish funding & maintenance reports during development.</div></div>
+            <div class="stat"><div style="font-weight:900;font-size:1.4rem;color:var(--accent)">Community</div><div style="color:var(--muted)">Contribute code, test pilots, or donate — all contributions are valued.</div></div>
           </div>
         </div>
-
-        <div class="faq" style="margin-top:18px">
-          <div class="faq-item" onclick="toggleFAQ(this)"><h5>How does Arcix protect student privacy?</h5><div class="faq-body">Arcix collects minimal telemetry; Arcix Mind runs locally by default and any cloud sync is governed by explicit consent and transparent funding reports.</div></div>
-          <div class="faq-item" onclick="toggleFAQ(this)"><h5>Can I run Arcix on older hardware?</h5><div class="faq-body">Yes — Arcix is optimized for low footprint deployments with lazy-loading services and optional light profiles for legacy devices.</div></div>
-          <div class="faq-item" onclick="toggleFAQ(this)"><h5>How are contributors paid?</h5><div class="faq-body">Transparent grant pools, bounties, and sponsored pilot funding pay contributors; we publish reports and payments publicly.</div></div>
-        </div>
-
       </div>
     </section>
 
+    <!-- JOIN -->
     <section id="join" class="content">
       <div class="section-inner wrap" style="text-align:center">
         <div class="section-title">Join the journey</div>
-        <div class="section-sub">Contribute code, design, testing, or sponsor education pilots. Paid bounties and grants available.</div>
+        <div class="section-sub">We’re building something that aims to be the very best. If you believe in privacy, education, and community-first software — help shape Arcix.</div>
 
         <div class="contributors reveal" style="margin-top:12px">
-          <div class="contributor"><img src="Icon Dark.png" alt="" style="width:64px;height:64px;border-radius:10px;margin:0 auto"><h4 style="margin-top:8px">lilacviolets</h4><div style="color:var(--muted)">Founder • UI & Experience</div></div>
-          <div class="contributor"><img src="Icon Dark.png" alt="" style="width:64px;height:64px;border-radius:10px;margin:0 auto"><h4 style="margin-top:8px">arimzyphr</h4><div style="color:var(--muted)">Co-Founder • Lead Dev</div></div>
-          <div class="contributor"><img src="Icon Dark.png" alt="" style="width:64px;height:64px;border-radius:10px;margin:0 auto"><h4 style="margin-top:8px">PCMan67</h4><div style="color:var(--muted)">Main Website Dev</div></div>
+          <!-- NO PFPs: names only to respect privacy and honesty -->
+          <div class="contributor"><h4 style="margin-top:8px">lilacviolets</h4><div style="color:var(--muted)">Founder • UI & Experience</div></div>
+          <div class="contributor"><h4 style="margin-top:8px">arimzyphr</h4><div style="color:var(--muted)">Co-Founder • Lead Dev</div></div>
+          <div class="contributor"><h4 style="margin-top:8px">Community</h4><div style="color:var(--muted)">Volunteers & contributors worldwide</div></div>
         </div>
 
-        <div class="donate" style="margin-top:18px">
-          <div class="pill" style="background:linear-gradient(135deg, rgba(0,255,136,0.12), rgba(0,255,136,0.06));padding:10px 16px;border-radius:999px;border:1px solid rgba(0,255,136,0.12);font-weight:800;color:var(--accent)">Open-source • Charity-funded</div>
-          <div class="pill" style="background:linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,255,136,0.04));padding:10px 16px;border-radius:999px;border:1px solid rgba(0,255,136,0.12);font-weight:800;color:var(--accent)">Developer Bounties • Grants</div>
+        <div class="donate" style="margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <div style="background:linear-gradient(135deg, rgba(0,255,136,0.12), rgba(0,255,136,0.06));padding:10px 16px;border-radius:999px;border:1px solid rgba(0,255,136,0.12);font-weight:800;color:var(--accent)">50% → Charity</div>
+          <div style="background:linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,255,136,0.04));padding:10px 16px;border-radius:999px;border:1px solid rgba(0,255,136,0.12);font-weight:800;color:var(--accent)">50% → Maintenance</div>
         </div>
 
         <form class="contact reveal" onsubmit="handleJoin(event)" style="margin-top:18px">
@@ -382,8 +384,8 @@ footer{padding:48px 20px;color:var(--muted);text-align:center;border-top:1px sol
           <input class="input" type="email" name="email" placeholder="Email address" required aria-label="Email address">
           <textarea name="message" placeholder="How you'd like to help or pilot details" required aria-label="Message"></textarea>
           <div style="display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap">
-            <button class="btn-primary" type="submit" style="padding:12px 22px;border-radius:999px;border:none;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#001a0f">Join Waitlist</button>
-            <a class="btn-ghost" href="https://github.com/Arcix-OS" target="_blank" rel="noopener" style="padding:10px 18px;border-radius:999px;border:2px solid rgba(0,255,136,0.12);color:var(--accent);text-decoration:none">View Repo</a>
+            <button class="btn btn-primary" type="submit">Join Waitlist</button>
+            <a class="btn btn-ghost" href="https://github.com/Arcix-OS" target="_blank" rel="noopener">View Repo</a>
           </div>
         </form>
       </div>
@@ -392,69 +394,74 @@ footer{padding:48px 20px;color:var(--muted);text-align:center;border-top:1px sol
   </main>
 
   <footer role="contentinfo">
-    <div class="wrap">
-      <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
-        <div style="font-weight:900;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent">Arcix OS</div>
-        <div style="color:var(--muted);font-size:13px">© 2025 Arcix Foundation — Open Source (AOSP / Linux)</div>
-      </div>
+    <div class="wrap" style="text-align:center">
+      <div style="font-weight:900;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent">Arcix OS</div>
+      <div style="color:var(--muted);font-size:13px;margin-top:8px">© 2025 Arcix Foundation — In active development. 50% charity • 50% maintenance. Passion project — community-first.</div>
     </div>
   </footer>
 
 <script>
-/* Single-file JS: immersive cinematic boot + long UX interactions */
+/* Single-file JS: cinematic boot, fixed button hover animations, honest copy, no profile images */
 
-(function(){
-  /* helper */
-  const rand = (a,b)=>Math.random()*(b-a)+a;
+/* tiny helpers */
+const rand = (a,b)=>Math.random()*(b-a)+a;
 
-  /* particles */
+/* particles generation */
+(function createParticles(){
   const particlesEl = document.querySelector('.particles');
-  const PCOUNT = Math.max(12, Math.min(72, Math.floor(window.innerWidth / 14)));
+  const PCOUNT = Math.max(12, Math.min(72, Math.floor(window.innerWidth / 12)));
   for(let i=0;i<PCOUNT;i++){
     const el = document.createElement('div');
     el.className = 'particle';
     const size = Math.round(rand(2,6));
-    el.style.width = size+'px'; el.style.height = size+'px';
-    el.style.left = rand(0,100)+'%';
-    el.style.top = rand(0,100)+'%';
-    el.style.animationDelay = rand(-16,0)+'s';
-    el.style.animationDuration = (12+Math.random()*12)+'s';
-    el.style.opacity = (Math.random()*0.7).toFixed(2);
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.left = rand(0,100) + '%';
+    el.style.top = rand(0,100) + '%';
+    el.style.animationDelay = rand(-16,0) + 's';
+    el.style.animationDuration = (10 + Math.random()*16) + 's';
+    el.style.opacity = (Math.random()*0.75).toFixed(2);
     particlesEl.appendChild(el);
   }
+})();
 
-  /* header scroll */
+/* header scroll shadow */
+(function headerScroll(){
   const header = document.querySelector('header.site');
   window.addEventListener('scroll', ()=> {
     if(window.scrollY > 80) header.classList.add('scrolled'); else header.classList.remove('scrolled');
   }, {passive:true});
+})();
 
-  /* reveal on scroll */
+/* reveal on scroll */
+(function revealOnScroll(){
   const reveals = document.querySelectorAll('.reveal');
-  const revealObserver = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target);
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach((e) => {
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
       }
     });
   }, {threshold: 0.12});
-  reveals.forEach(r => revealObserver.observe(r));
+  reveals.forEach(r => io.observe(r));
+})();
 
-  /* glyph stroke animation */
-  function animateGlyph(){
-    document.querySelectorAll('.glyph-stroke').forEach((path,i)=>{
-      try{
-        const len = path.getTotalLength();
-        path.style.strokeDasharray = len;
-        path.style.strokeDashoffset = len;
-        path.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(.2,.9,.2,1) ' + (i * 0.28) + 's';
-        requestAnimationFrame(()=> path.style.strokeDashoffset = '0');
-      }catch(e){}
-    });
-  }
+/* glyph stroke animation */
+function animateGlyph(){
+  document.querySelectorAll('.glyph-stroke').forEach((path,i)=>{
+    try{
+      const len = path.getTotalLength();
+      path.style.strokeDasharray = len;
+      path.style.strokeDashoffset = len;
+      path.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(.2,.9,.2,1) ' + (i * 0.28) + 's';
+      requestAnimationFrame(()=> path.style.strokeDashoffset = '0');
+    }catch(e){}
+  });
+}
 
-  /* boot sequence */
+/* boot sequence */
+(function bootSequence(){
   const glyphWrap = document.getElementById('glyphWrap');
   const scanWrap = document.getElementById('scanWrap');
   const scanBar = document.getElementById('scanBar');
@@ -462,106 +469,87 @@ footer{padding:48px 20px;color:var(--muted);text-align:center;border-top:1px sol
   const heroContent = document.getElementById('heroContent');
   const wakeBtn = document.getElementById('wakeBtn');
   const pilotBtn = document.getElementById('pilotBtn');
-  const bootCard = document.getElementById('bootCard');
   let booted = false;
 
-  function startBootSequence(){
+  function startBoot(){
     if(booted) return;
     booted = true;
 
-    // show glyph
+    // reveal glyph
     glyphWrap.style.opacity = 1;
     glyphWrap.style.transform = 'scale(1) translateZ(0)';
     animateGlyph();
 
-    // animate scan
-    setTimeout(()=>{ scanWrap.style.opacity = 1; scanBar.style.transition = 'transform 2.4s linear'; scanBar.style.transform = 'translateX(420%)'; }, 1000);
-
-    // show message
-    setTimeout(()=>{ bootMsg.style.opacity = 1; }, 1700);
-
-    // second pass
+    // animate scan bar
+    setTimeout(()=>{ scanWrap.style.opacity = 1; scanBar.style.transition = 'transform 2.8s linear'; scanBar.style.transform = 'translateX(420%)'; }, 900);
+    setTimeout(()=>{ bootMsg.style.opacity = 1; }, 1600);
     setTimeout(()=>{ scanBar.style.transition = 'transform 1.6s linear'; scanBar.style.transform = 'translateX(-20%)'; }, 3200);
 
-    // reveal hero content
-    setTimeout(()=>{
+    // reveal content
+    setTimeout(()=> {
       heroContent.style.opacity = 1;
       heroContent.style.transform = 'none';
       glyphWrap.style.transition = 'transform 700ms var(--ease), opacity 700ms var(--ease)';
       glyphWrap.style.transform = 'scale(.56) translateY(-24px)';
-      glyphWrap.style.opacity = .96;
+      glyphWrap.style.opacity = .98;
     }, 4200);
 
-    // fade scan/message
-    setTimeout(()=>{ scanWrap.style.opacity = 0; bootMsg.style.opacity = 0; }, 5600);
+    // fade scan visuals
+    setTimeout(()=> { scanWrap.style.opacity = 0; bootMsg.style.opacity = 0; }, 5600);
   }
 
-  wakeBtn.addEventListener('click', startBootSequence);
-  pilotBtn.addEventListener('click', ()=>{ document.getElementById('join').scrollIntoView({behavior:'smooth'}); });
+  wakeBtn.addEventListener('click', startBoot);
+  pilotBtn.addEventListener('click', ()=> document.getElementById('join').scrollIntoView({behavior:'smooth'}));
 
-  // auto boot after small pause for cinematic feel
-  window.addEventListener('load', ()=> setTimeout(()=> startBootSequence(), 700));
+  window.addEventListener('load', ()=> setTimeout(startBoot, 700));
+})();
 
-  /* demo actions (simulated) */
-  window.simulateAction = function(action){
-    const cw = document.getElementById('workspaceCanvas');
-    const old = cw.innerHTML;
-    if(action==='open'){
-      cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">Opening Project…</div><div style="color:var(--muted)">Loading assets • Building workspace</div>';
-    } else if(action==='settings'){
-      cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">Settings</div><div style="color:var(--muted)">Display • Privacy • Arcix Mind</div>';
-    } else {
-      cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">Arcix Mind</div><div style="color:var(--muted)">Summarizing notes locally…</div>';
-    }
-    setTimeout(()=> cw.innerHTML = old, 1200);
-  };
+/* demo actions (simulated) */
+window.simulateAction = function(action){
+  const cw = document.getElementById('workspaceCanvas');
+  const old = cw.innerHTML;
+  if(action === 'open'){
+    cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">Opening Project…</div><div style="color:var(--muted)">Loading assets • preparing workspace</div>';
+  } else if(action === 'settings'){
+    cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">System Settings</div><div style="color:var(--muted)">Display • Privacy • Arcix Mind</div>';
+  } else {
+    cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">Arcix Mind</div><div style="color:var(--muted)">Summarizing notes locally…</div>';
+  }
+  setTimeout(()=> cw.innerHTML = old, 1100);
+};
 
-  /* FAQ toggle */
-  window.toggleFAQ = function(el){
-    const body = el.querySelector('.faq-body');
-    if(!body) return;
-    const shown = body.style.display === 'block';
-    if(shown){ body.style.display = 'none'; } else { body.style.display = 'block'; }
-  };
+/* FAQ toggle */
+window.toggleFAQ = function(el){
+  const body = el.querySelector('.faq-body');
+  if(!body) return;
+  const shown = body.style.display === 'block';
+  if(shown) body.style.display = 'none'; else body.style.display = 'block';
+};
 
-  /* contact handler (simulate) */
-  window.handleJoin = function(e){
-    e.preventDefault();
-    const f = e.target;
-    const name = f.name?.value || 'friend';
-    const email = f.email?.value || '';
-    const btn = f.querySelector('button[type="submit"]');
-    const old = btn.textContent;
-    btn.disabled = true; btn.textContent = 'Sending…';
-    setTimeout(()=>{
-      btn.disabled = false;
-      btn.textContent = '✓ Submitted';
-      alert(`Thanks ${name}! We'll reach you at ${email}.`);
-      btn.textContent = old;
-      f.reset();
-    }, 900);
-  };
+/* contact form (simulated) */
+window.handleJoin = function(e){
+  e.preventDefault();
+  const f = e.target;
+  const name = f.name?.value || 'friend';
+  const email = f.email?.value || '';
+  const btn = f.querySelector('button[type="submit"]');
+  const originalText = btn ? btn.textContent : 'Sending…';
+  if(btn){ btn.disabled = true; btn.textContent = 'Sending…'; }
+  setTimeout(()=>{
+    if(btn){ btn.disabled = false; btn.textContent = '✓ Submitted'; }
+    alert(`Thanks ${name}! We received your request. We'll reach you at ${email} with updates and pilot invites.`);
+    if(btn){ btn.textContent = originalText; }
+    f.reset();
+  }, 900);
+};
 
-  /* accessibility: respect reduce motion */
+/* respect reduced motion for accessibility */
+(function respectReducedMotion(){
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
   if(mq.matches){
     document.querySelectorAll('.particle').forEach(p=>p.style.animation='none');
     document.querySelectorAll('.glyph-stroke').forEach(p=>{ p.style.strokeDashoffset = 0; p.style.transition='none' });
-    document.querySelectorAll('.boot-screen, .boot-card').forEach(el=>el.style.transition = 'none');
   }
-
-  /* small helper to re-observe reveals after hero reveal */
-  setTimeout(()=> { document.querySelectorAll('.reveal').forEach(r => revealObserver.observe(r)); }, 800);
-
-  /* responsive: regenerate particles on resize */
-  let resizeTimer;
-  window.addEventListener('resize', ()=>{
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(()=> {
-      // nothing fancy here; keep original particle set for stability
-    }, 200);
-  }, {passive:true});
-
 })();
 </script>
 </body>
