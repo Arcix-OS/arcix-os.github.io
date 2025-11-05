@@ -8,206 +8,217 @@
 <link rel="icon" href="Icon Dark.png" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#000000;
-    --bg-2:#050505;
-    --fg:#e8fff0;
-    --muted:#9fbfb0;
-    --accent:#00ff88;
-    --accent-2:#66ffb8;
-    --accent-strong:#00cc66;
-    --glass:rgba(255,255,255,0.03);
-    --card:#070707;
-    --radius:16px;
-    --max:1240px;
-    --ease:cubic-bezier(.2,.9,.2,1);
-    --nav-h:76px;
-  }
+:root{
+  --bg:#000000;
+  --bg-2:#050505;
+  --fg:#e8fff0;
+  --muted:#9fbfb0;
+  --accent:#00ff88;
+  --accent-2:#66ffb8;
+  --accent-strong:#00cc66;
+  --glass:rgba(255,255,255,0.03);
+  --card:#070707;
+  --radius:18px;
+  --max:1400px;
+  --ease:cubic-bezier(.2,.9,.2,1);
+  --nav-h:80px;
+  --film: rgba(0,0,0,0.26);
+}
 
-  /* Reset + base */
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale}
-  body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;line-height:1.5;overflow-x:hidden}
-  a{color:var(--accent);text-decoration:none}
-  img{max-width:100%;display:block}
+/* Reset */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;line-height:1.45;overflow-x:hidden;scroll-behavior:smooth}
+a{color:var(--accent);text-decoration:none}
+img{max-width:100%;display:block}
 
-  /* animated ambient backdrop */
-  body::before{
-    content:"";
-    position:fixed;inset:-20% -20% -20% -20%;z-index:0;pointer-events:none;
-    background:
-      radial-gradient(900px 500px at 12% 18%, rgba(0,255,136,0.035), transparent 8%),
-      radial-gradient(700px 400px at 88% 82%, rgba(0,255,136,0.02), transparent 8%),
-      linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.9));
-    mix-blend-mode:screen;
-    animation:ambientDrift 28s ease-in-out infinite;
-  }
-  @keyframes ambientDrift{0%,100%{transform:translate(0,0)}33%{transform:translate(-3%,2%)}66%{transform:translate(3%,-2%)}}
+/* ambient */
+:root{ --ambient-op: 0.9 }
+body::before{
+  content:"";
+  position:fixed;inset:-30%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1000px 600px at 12% 18%, rgba(0,255,136,0.04), transparent 8%),
+    radial-gradient(700px 480px at 88% 82%, rgba(0,255,136,0.025), transparent 8%),
+    linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.9));
+  mix-blend-mode:screen;
+  animation:ambientDrift 30s ease-in-out infinite;
+  opacity:var(--ambient-op);
+}
+@keyframes ambientDrift{0%,100%{transform:translate(0,0)}33%{transform:translate(-3%,2%)}66%{transform:translate(3%,-2%)}}
 
-  .wrap{max-width:var(--max);margin:0 auto;padding:0 20px;position:relative;z-index:20}
+/* layout */
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px;position:relative;z-index:40}
+header.site{position:fixed;inset:0 0 auto 0;height:var(--nav-h);display:flex;align-items:center;z-index:200;background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.08));backdrop-filter: blur(14px) saturate(140%);border-bottom:1px solid rgba(0,255,136,0.04);transition:all .45s var(--ease)}
+header.site.scrolled{background:linear-gradient(180deg, rgba(0,0,0,0.75), rgba(0,0,0,0.52));box-shadow:0 30px 100px rgba(0,255,136,0.06);border-bottom-color:rgba(0,255,136,0.09)}
+.nav{display:flex;align-items:center;justify-content:space-between;width:100%;gap:12px;padding:0 20px}
+.brand{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
+.mini{width:56px;height:56px;border-radius:12px;padding:8px;background:linear-gradient(135deg,#000,#0a0a0a);border:1px solid rgba(0,255,136,0.12);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,255,136,0.04), inset 0 1px 0 rgba(255,255,255,0.02);position:relative;overflow:hidden}
+.mini::before{content:"";position:absolute;inset:-120%;background:linear-gradient(45deg,transparent,rgba(0,255,136,0.06),transparent);animation:miniShine 4s linear infinite}
+@keyframes miniShine{to{transform:translate(140%,140%) rotate(12deg)}}
+.brand .title{font-weight:900;font-size:1.05rem;background:linear-gradient(90deg,var(--accent),var(--accent-2),#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+nav.links{display:flex;gap:8px;align-items:center}
+nav.links a{padding:10px 14px;border-radius:10px;font-weight:700;color:var(--fg);transition:all .24s var(--ease)}
+nav.links a:hover{color:var(--accent);transform:translateY(-2px);background:rgba(0,255,136,0.03)}
+.cta-top{padding:10px 18px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#001a0f;font-weight:900;border:none;cursor:pointer;box-shadow:0 10px 40px rgba(0,255,136,0.12)}
+.mobile-toggle{display:none;background:transparent;border:0;color:var(--accent);font-size:1.6rem;cursor:pointer}
 
-  /* particles */
-  .particles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-  .particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--accent);opacity:0;box-shadow:0 0 10px var(--accent);animation:rise 16s linear infinite}
-  @keyframes rise{0%{transform:translateY(100vh) scale(.2);opacity:0}6%{opacity:.7}90%{opacity:.25}100%{transform:translateY(-120vh) scale(1)}}
+/* particles */
+.particles{position:fixed;inset:0;z-index:10;pointer-events:none}
+.particle{position:absolute;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);opacity:0;animation:rise 16s linear infinite}
+@keyframes rise{0%{transform:translateY(120vh) scale(.2);opacity:0}6%{opacity:.6}90%{opacity:.25}100%{transform:translateY(-140vh) scale(1)}}
 
-  /* header */
-  header.site{
-    position:fixed;left:0;right:0;top:0;height:var(--nav-h);display:flex;align-items:center;z-index:120;
-    backdrop-filter: blur(14px) saturate(140%); background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.08));
-    border-bottom:1px solid rgba(0,255,136,0.04);transition:all .45s var(--ease)
-  }
-  header.site.scrolled{background:linear-gradient(180deg, rgba(0,0,0,0.75), rgba(0,0,0,0.6));box-shadow:0 30px 90px rgba(0,255,136,0.06);border-bottom-color:rgba(0,255,136,0.09)}
-  .nav{display:flex;align-items:center;justify-content:space-between;width:100%;gap:16px;padding:0 20px}
-  .brand{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
-  .mini{width:52px;height:52px;border-radius:12px;padding:8px;background:linear-gradient(135deg,#000,#0a0a0a);border:1px solid rgba(0,255,136,0.12);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,255,136,0.04), inset 0 1px 0 rgba(255,255,255,0.02);position:relative;overflow:hidden}
-  .mini::before{content:"";position:absolute;inset:-120%;background:linear-gradient(45deg,transparent,rgba(0,255,136,0.06),transparent);animation:miniShine 3.8s linear infinite}
-  @keyframes miniShine{to{transform:translate(140%,140%) rotate(12deg)}}
-  .brand .title{font-weight:900;font-size:1.05rem;background:linear-gradient(90deg,var(--accent),var(--accent-2),#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
-  nav.links{display:flex;gap:8px;align-items:center}
-  nav.links a{padding:10px 14px;border-radius:10px;font-weight:700;color:var(--fg);transition:all .25s var(--ease)}
-  nav.links a:hover{color:var(--accent);transform:translateY(-2px);background:rgba(0,255,136,0.03)}
-  .cta-top{padding:10px 18px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#001a0f;font-weight:900;border:none;cursor:pointer;box-shadow:0 10px 40px rgba(0,255,136,0.12)}
+/* HERO / BOOT cinematic card */
+main{position:relative;z-index:20}
+.hero{min-height:110vh;padding-top:calc(var(--nav-h) + 26px);display:flex;align-items:center;justify-content:center;position:relative;text-align:center;perspective:1400px}
+.hero-inner{max-width:1200px;margin:0 auto;padding:40px 20px;display:grid;gap:22px;align-items:center;justify-items:center}
+.boot-card{width:920px;max-width:96vw;border-radius:26px;padding:28px;background:linear-gradient(180deg, rgba(6,6,6,0.86), rgba(12,12,12,0.7));border:1px solid rgba(0,255,136,0.04);box-shadow:0 60px 160px rgba(0,255,136,0.03), inset 0 1px 0 rgba(255,255,255,0.02);overflow:hidden;position:relative;transform-style:preserve-3d}
+.boot-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.dots{display:flex;gap:8px}
+.small-dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.03)}
+.boot-meta{font-size:.88rem;color:var(--muted);font-weight:700}
 
-  /* hero cinematic boot wrapper */
-  main{position:relative;z-index:10}
-  .hero{
-    min-height:100vh;padding-top:calc(var(--nav-h) + 26px);display:flex;align-items:center;justify-content:center;position:relative;text-align:center;perspective:1000px;
-  }
-  .hero-inner{max-width:1080px;margin:0 auto;padding:40px 20px;display:grid;gap:18px;align-items:center;justify-items:center}
+/* screen */
+.boot-screen{height:520px;border-radius:16px;background:linear-gradient(180deg,#020202,#080808);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(60% 50% at 50% 28%, rgba(0,0,0,0), rgba(0,0,0,0.5));mix-blend-mode:multiply}
+.film{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);background-size:2px 2px;opacity:0.08;mix-blend-mode:overlay}
 
-  /* boot card */
-  .boot-card{width:880px;max-width:94vw;border-radius:20px;padding:24px;background:linear-gradient(180deg, rgba(6,6,6,0.85), rgba(10,10,10,0.6));border:1px solid rgba(0,255,136,0.04);box-shadow:0 40px 120px rgba(0,255,136,0.03), inset 0 1px 0 rgba(255,255,255,0.02);overflow:hidden;position:relative}
-  .boot-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-  .dots{display:flex;gap:8px}
-  .dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.03)}
-  .boot-screen{height:420px;border-radius:12px;background:linear-gradient(180deg,#040404,#090909);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-  .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(60% 50% at 50% 30%, rgba(0,0,0,0), rgba(0,0,0,0.45));mix-blend-mode:multiply}
-  .film{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);background-size:2px 2px;opacity:0.08;mix-blend-mode:overlay}
+/* glyph */
+.glyph-wrap{width:320px;height:320px;display:grid;place-items:center;transform:translateZ(80px) scale(.96);opacity:0}
+.glyph-svg{width:100%;height:100%;filter:drop-shadow(0 22px 64px rgba(0,255,136,0.16))}
+.glyph-stroke{stroke:var(--accent-2);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.glyph-glow{filter:blur(6px);opacity:.28;mix-blend-mode:screen}
 
-  /* logo glyph area */
-  .glyph-wrap{width:260px;height:260px;display:grid;place-items:center;transform:translateZ(0);opacity:0;transform-origin:center}
-  .glyph-svg{width:100%;height:100%;filter:drop-shadow(0 18px 48px rgba(0,255,136,0.16))}
-  .glyph-stroke{stroke:var(--accent-2);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
-  .glyph-glow{filter:blur(6px);opacity:.28;mix-blend-mode:screen}
+/* scan & status */
+.scan-wrap{width:520px;height:10px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,255,136,0.02));overflow:hidden;margin-top:18px;opacity:0}
+.scan-bar{height:100%;width:8%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transform:translateX(-140%);will-change:transform}
+.boot-msg{color:var(--muted);font-weight:700;letter-spacing:1px;margin-top:14px;opacity:0}
 
-  /* scan bar + message */
-  .scan-bar-wrap{width:420px;height:8px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,255,136,0.03));overflow:hidden;margin-top:18px;opacity:0}
-  .scan-bar{height:100%;width:6%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transform:translateX(-140%)}
-  .boot-msg{color:var(--muted);font-weight:700;letter-spacing:1px;margin-top:14px;opacity:0}
+/* subtle UI after boot */
+.hero-title{font-weight:900;font-size:clamp(2.2rem,6.5vw,4.6rem);line-height:0.95;margin:10px 0;color:transparent;background:linear-gradient(90deg,var(--accent),var(--accent-2),#fff);-webkit-background-clip:text;background-clip:text;text-shadow:0 0 80px rgba(0,255,136,0.08)}
+.hero-sub{color:var(--muted);max-width:920px;margin:0 auto;font-size:1.05rem}
+.hero-actions{display:flex;gap:14px;justify-content:center;margin-top:14px;flex-wrap:wrap}
 
-  /* hero revealed content after boot */
-  .hero-title{font-weight:900;font-size:clamp(2rem,6.5vw,4.2rem);line-height:0.95;margin:6px 0;color:transparent;background:linear-gradient(90deg,var(--accent),var(--accent-2),#fff);-webkit-background-clip:text;background-clip:text;text-shadow:0 0 60px rgba(0,255,136,0.08)}
-  .hero-sub{color:var(--muted);max-width:920px;margin:0 auto;font-size:1.05rem}
-  .hero-actions{display:flex;gap:12px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+/* long engaging sections */
+.content{padding:96px 20px;position:relative;z-index:20}
+.section-inner{max-width:var(--max);margin:0 auto}
+.section-title{font-size:2.4rem;font-weight:900;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:12px}
+.section-sub{color:var(--muted);margin-bottom:28px}
 
-  /* sections */
-  section.content{padding:88px 20px;position:relative;z-index:10}
-  .section-inner{max-width:var(--max);margin:0 auto}
-  .section-title{font-size:2.2rem;font-weight:900;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
-  .section-sub{color:var(--muted);margin-bottom:28px}
+/* features grid */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.feature{
+  background:linear-gradient(180deg, rgba(6,6,6,0.78), rgba(10,10,10,0.6));
+  border-radius:14px;padding:20px;border:1px solid rgba(0,255,136,0.06);transition:transform .36s var(--ease),box-shadow .36s var(--ease);
+}
+.feature:hover{transform:translateY(-10px);box-shadow:0 30px 90px rgba(0,255,136,0.04);border-color:rgba(0,255,136,0.12)}
+.feature h4{color:var(--accent);margin:0 0 10px}
+.feature p{color:var(--muted);font-size:.98rem;line-height:1.6}
 
-  .panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
-  .panel{background:linear-gradient(180deg, rgba(0,255,136,0.02), rgba(0,255,136,0.01));padding:24px;border-radius:16px;border:1px solid rgba(0,255,136,0.06);backdrop-filter:blur(8px);transition:all .35s var(--ease)}
-  .panel:hover{transform:translateY(-8px);box-shadow:0 30px 80px rgba(0,255,136,0.05);border-color:rgba(0,255,136,0.14)}
+/* interactive demo stage */
+.demo-stage{margin-top:28px;border-radius:14px;padding:18px;background:linear-gradient(180deg,#060606,#0a0a0a);border:1px solid rgba(0,255,136,0.04);display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
+.demo-left{background:linear-gradient(180deg,#040404,#0a0a0a);border-radius:12px;padding:14px;min-height:240px;display:flex;flex-direction:column;gap:12px}
+.desktop-window{flex:1;border-radius:10px;background:linear-gradient(180deg,#050505,#0a0a0a);display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;border:1px solid rgba(255,255,255,0.02)}
+.demo-right{display:flex;flex-direction:column;gap:10px}
+.demo-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-  .grid{display:grid;gap:18px}
-  .card{background:linear-gradient(180deg,#060606,#0a0a0a);padding:20px;border-radius:12px;border:1px solid rgba(0,255,136,0.06)}
+/* testimonials / stats */
+.testimonials{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:start;margin-top:24px}
+.test-card{background:linear-gradient(180deg,#060606,#0a0a0a);padding:18px;border-radius:12px;border:1px solid rgba(0,255,136,0.04)}
+.stat{background:linear-gradient(180deg,#070707,#090909);padding:18px;border-radius:12px;border:1px solid rgba(0,255,136,0.04);text-align:center}
 
-  .roadmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px;position:relative}
-  .mile{padding:18px;border-radius:12px;background:linear-gradient(180deg,#070707,#0c0c0c);border:1px solid rgba(0,255,136,0.06);position:relative}
-  .mile::before{content:"";position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border:3px solid #000;box-shadow:0 0 18px rgba(0,255,136,0.12)}
-  .mile h5{margin:0 0 8px;color:var(--accent);font-weight:800}
-  .mile p{margin:0;color:var(--muted)}
+/* FAQ */
+.faq{margin-top:22px;display:grid;gap:12px}
+.faq-item{background:linear-gradient(180deg,#050505,#0a0a0a);padding:14px;border-radius:10px;border:1px solid rgba(0,255,136,0.04);cursor:pointer}
+.faq-item h5{margin:0;color:var(--accent);font-weight:800}
+.faq-body{margin-top:8px;color:var(--muted);display:none}
 
-  .contributors{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:12px}
-  .contributor{min-width:180px;padding:12px;border-radius:12px;background:linear-gradient(180deg,#0a0a0a,#080808);border:1px solid rgba(0,255,136,0.05);text-align:center}
+/* join / contact */
+.contributors{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.contributor{min-width:160px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#070707,#0a0a0a);border:1px solid rgba(0,255,136,0.04);text-align:center}
+form.contact{max-width:880px;margin:28px auto 0;display:grid;gap:12px}
+.input,textarea{background:rgba(12,12,12,0.75);border-radius:12px;padding:12px 14px;border:1px solid rgba(0,255,136,0.06);color:var(--fg)}
+.input:focus,textarea:focus{outline:none;box-shadow:0 0 0 8px rgba(0,255,136,0.06);border-color:var(--accent)}
+textarea{min-height:160px;resize:vertical}
 
-  /* contact */
-  form.contact{max-width:760px;margin:28px auto 0;display:grid;gap:12px}
-  input,textarea{background:rgba(12,12,12,0.75);border-radius:12px;padding:12px 14px;border:1px solid rgba(0,255,136,0.06);color:var(--fg)}
-  input:focus,textarea:focus{outline:none;box-shadow:0 0 0 8px rgba(0,255,136,0.06);border-color:var(--accent)}
-  textarea{min-height:140px;resize:vertical}
+/* footer */
+footer{padding:48px 20px;color:var(--muted);text-align:center;border-top:1px solid rgba(0,255,136,0.04);margin-top:48px}
 
-  /* footer */
-  footer{padding:48px 20px;color:var(--muted);text-align:center;border-top:1px solid rgba(0,255,136,0.04);margin-top:40px}
+/* reveal util */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.visible{opacity:1;transform:none}
 
-  /* reveal util */
-  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
-  .visible{opacity:1;transform:none}
+/* micro */
+.scroll-indicator{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--accent);font-size:.85rem;font-weight:800;opacity:.8}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(10px)}}
 
-  /* responsive tweaks */
-  @media (max-width:980px){
-    .nav .links{display:none}
-    .mini{width:44px;height:44px}
-    .boot-screen{height:320px}
-    .glyph-wrap{width:200px;height:200px}
-  }
-  @media (max-width:640px){
-    .boot-card{padding:18px}
-    .hero-inner{padding:24px}
-    .boot-screen{height:260px}
-    .glyph-wrap{width:160px;height:160px}
-    .section-title{font-size:1.6rem}
-  }
+/* responsive */
+@media (max-width:1100px){
+  .features-grid{grid-template-columns:repeat(2,1fr)}
+  .demo-stage{grid-template-columns:1fr;row-gap:12px}
+  .testimonials{grid-template-columns:1fr}
+}
+@media (max-width:720px){
+  header.site{height:68px}
+  .mini{width:44px;height:44px}
+  .nav{padding:0 12px}
+  .features-grid{grid-template-columns:1fr}
+  .glyph-wrap{width:160px;height:160px}
+  .boot-screen{height:360px}
+  .boot-card{padding:18px;border-radius:16px}
+  .hero-inner{padding:24px}
+  .particles{display:none}
+  .mobile-toggle{display:inline-flex}
+  nav.links{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
+  .glyph-stroke{stroke-dashoffset:0!important;transition:none!important}
+}
 </style>
 </head>
 <body>
   <div class="particles" aria-hidden="true"></div>
 
-  <header class="site" role="banner" aria-label="Top navigation">
+  <header class="site" role="banner" aria-label="Main navigation">
     <div class="wrap nav" role="navigation">
-      <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-hidden="true">
-        <div class="mini" aria-hidden="true">
-          <!-- small glyph -->
-          <svg width="44" height="44" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect x="4" y="4" width="56" height="56" rx="12" fill="#020202" />
-            <path d="M18 36c8-14 26-14 36-4" stroke="url(#g1)" stroke-width="3" stroke-linecap="round"/>
-            <defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#00ff88"/><stop offset="1" stop-color="#66ffb8"/></linearGradient></defs>
-          </svg>
-        </div>
-        <div>
-          <div class="title">Arcix</div>
-        </div>
+      <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <div class="mini" aria-hidden="true"><img src="Icon Dark.png" alt="Arcix logo" style="width:100%;height:100%;object-fit:contain"></div>
+        <div><div class="title">Arcix</div></div>
       </div>
 
       <nav class="links" aria-label="Primary links">
         <a href="#features">Features</a>
         <a href="#vision">Vision</a>
-        <a href="#roadmap">Roadmap</a>
+        <a href="#demo">Demo</a>
         <a href="#join">Join</a>
-        <button class="cta-top" id="tryBtn">Wake Arcix</button>
+        <button class="cta-top" id="wakeBtn">Wake Arcix</button>
       </nav>
     </div>
   </header>
 
   <main>
-    <section class="hero" aria-label="Cinematic boot sequence">
+    <section class="hero" aria-label="Arcix boot cinematic">
       <div class="hero-inner wrap">
-        <div style="display:grid;gap:10px;align-items:center;justify-items:center">
-          <div id="initialText" style="opacity:1;transition:opacity .6s"> <!-- initial calm copy while boot idle -->
-            <div style="font-weight:700;color:var(--muted);font-size:0.9rem">Arcix OS</div>
-            <h2 style="font-weight:900;font-size:1.6rem;color:transparent;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text">A new generation of operating systems.</h2>
-          </div>
+        <div style="display:grid;gap:8px;align-items:center;justify-items:center">
+          <div id="introBadge" style="font-weight:700;color:var(--muted);font-size:.95rem;letter-spacing:1px">Arcix OS</div>
+          <div id="introTag" style="font-weight:900;font-size:1.2rem;color:transparent;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text">A new generation of operating systems.</div>
         </div>
 
         <div class="boot-card" id="bootCard" role="region" aria-label="Arcix boot preview">
           <div class="boot-top">
-            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <div class="dots"><div class="small-dot"></div><div class="small-dot"></div><div class="small-dot"></div></div>
             <div style="flex:1"></div>
-            <div style="font-size:.85rem;color:var(--muted);font-weight:700">v0.5-beta</div>
+            <div class="boot-meta">v0.5-beta</div>
           </div>
 
           <div class="boot-screen" id="bootScreen">
             <div class="vignette"></div>
             <div class="film"></div>
 
-            <!-- Glyph / logo area (stroke animation applied via JS) -->
             <div class="glyph-wrap" id="glyphWrap" aria-hidden="true">
               <svg class="glyph-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-                <defs>
-                  <linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#00ff88"/><stop offset="1" stop-color="#66ffb8"/></linearGradient>
-                </defs>
+                <defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#00ff88"/><stop offset="1" stop-color="#66ffb8"/></linearGradient></defs>
                 <g transform="translate(12,12) scale(0.85)">
                   <circle cx="120" cy="120" r="88" stroke="rgba(255,255,255,0.02)" stroke-width="6" fill="none"/>
                   <path class="glyph-stroke" d="M44 120c18-36 54-56 76-56s58 18 76 56" stroke-dasharray="420" stroke-dashoffset="420"/>
@@ -217,293 +228,338 @@
               </svg>
             </div>
 
-            <!-- scan + status -->
-            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center">
-              <div class="scan-bar-wrap" id="scanWrap" aria-hidden="true"><div class="scan-bar" id="scanBar"></div></div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:6">
+              <div class="scan-wrap" id="scanWrap" aria-hidden="true"><div class="scan-bar" id="scanBar"></div></div>
               <div class="boot-msg" id="bootMsg" aria-hidden="true">Initializing… loading modules… preparing workspace</div>
             </div>
           </div>
         </div>
 
-        <!-- Hero content hidden until boot completes; will be revealed -->
-        <div id="heroContent" style="opacity:0;transform:translateY(20px);transition:opacity .9s var(--ease),transform .9s var(--ease)">
+        <div id="heroContent" style="opacity:0;transform:translateY(18px);transition:opacity .9s var(--ease),transform .9s var(--ease);width:100%;max-width:880px;margin-top:8px">
           <h1 class="hero-title" id="mainTitle">A new generation of operating systems.</h1>
-          <p class="hero-sub">Privacy-first. Community-funded. Designed by <strong>lilacviolets</strong> and built with <strong>arimzyphr</strong>. Experience Arcix — where systems teach and empower.</p>
-          <div class="hero-actions" style="margin-top:14px">
+          <p class="hero-sub">Privacy-first. Community-funded. Designed by <strong>lilacviolets</strong> and built with <strong>arimzyphr</strong>. Arcix wakes up like a story — explore, learn, and build with care.</p>
+          <div class="hero-actions">
             <a class="cta btn-primary" href="https://github.com/Arcix-OS" target="_blank" rel="noopener" style="text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#001a0f;box-shadow:0 12px 40px rgba(0,255,136,0.12)">Contribute on GitHub</a>
             <button class="cta btn-ghost" id="pilotBtn" style="padding:12px 22px;border-radius:999px;border:2px solid rgba(0,255,136,0.12);font-weight:800;color:var(--accent);backdrop-filter:blur(6px)">Request a School Pilot</button>
           </div>
         </div>
       </div>
 
-      <div class="scroll-indicator" aria-hidden="true" style="bottom:18px">
+      <div class="scroll-indicator" aria-hidden="true" style="bottom:18px;animation:bounce 2s ease-in-out infinite">
         <span style="font-weight:800;letter-spacing:1px">Scroll</span>
       </div>
     </section>
 
-    <!-- Features -->
     <section id="features" class="content">
       <div class="section-inner wrap">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
           <div>
-            <div class="section-title">Why Arcix OS?</div>
-            <div class="section-sub">Productivity, privacy, and purpose — in one open OS.</div>
+            <div class="section-title">What makes Arcix special</div>
+            <div class="section-sub">A cinematic OS that balances beginner clarity with expert power — privacy by design, classroom-ready, and community-run.</div>
           </div>
           <div style="width:320px">
             <div style="background:linear-gradient(180deg,#070707,#0a0a0a);padding:12px;border-radius:12px;border:1px solid rgba(0,255,136,0.04)">
               <div style="font-weight:800;color:var(--accent)">Arcix Mind</div>
-              <div style="color:var(--muted);margin-top:8px">On-device summarization and local automations that preserve your privacy by default.</div>
+              <div style="color:var(--muted);margin-top:8px">Local summarization, workflow suggestions, safe automations — all opt-in.</div>
             </div>
           </div>
         </div>
 
-        <div class="panels" style="margin-top:18px">
-          <div class="panel reveal"><h4>Unified Workspace</h4><p>Floating windows, task templates, and focused workspaces that adapt.</p></div>
-          <div class="panel reveal"><h4>Education Tools</h4><p>Offline content packs, teacher dashboards, and easy deployment for schools.</p></div>
-          <div class="panel reveal"><h4>Community Funding</h4><p>Transparent funding & bounties that sustain contributors and pilots.</p></div>
-          <div class="panel reveal"><h4>Compatibility</h4><p>Android apps, PWAs, and optional containers for robust desktop workflows.</p></div>
-          <div class="panel reveal"><h4>Security</h4><p>Per-app permissions, encrypted vaults, verified boot, and minimal telemetry.</p></div>
-          <div class="panel reveal"><h4>Low Footprint</h4><p>Optimized services to run on modern and older hardware alike.</p></div>
+        <div class="features-grid reveal" style="margin-top:20px">
+          <div class="feature">
+            <h4>Unified Workspace</h4><p>Context-aware layouts, floating windows, and persistent workspaces that move with you.</p>
+          </div>
+          <div class="feature">
+            <h4>Arcix Connect</h4><p>High-quality calls & messaging over Wi-Fi with end-to-end encryption and cross-device handoff.</p>
+          </div>
+          <div class="feature">
+            <h4>Education Tools</h4><p>Teacher dashboards, offline bundles, and pilot tooling for low-cost deployments.</p>
+          </div>
+          <div class="feature">
+            <h4>App Compatibility</h4><p>Run Android apps, PWAs, and isolated containers for advanced desktop apps.</p>
+          </div>
+          <div class="feature">
+            <h4>Community Funding</h4><p>Transparent grants and bounties that sustain maintainers and pilots.</p>
+          </div>
+          <div class="feature">
+            <h4>Security</h4><p>Per-app permissions, verified boot, encrypted vaults, and minimal telemetry.</p>
+          </div>
         </div>
+
+        <div id="demo" class="reveal" style="margin-top:36px">
+          <div class="demo-stage">
+            <div class="demo-left">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px var(--accent)"></div>
+                <div style="font-weight:800;color:var(--muted)">Live demo — simulated workspace</div>
+                <div style="flex:1"></div>
+                <div style="font-weight:700;color:var(--muted)">Preview</div>
+              </div>
+              <div class="desktop-window" id="desktopWindow" style="margin-top:12px">
+                <div id="workspaceCanvas" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+                  <div style="font-weight:900;color:var(--accent)">Arcix Workspace</div>
+                  <div style="color:var(--muted)">Open projects • Notes • Arcix Mind</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:10px" class="demo-actions">
+                <button class="btn btn-primary" onclick="simulateAction('open')">Open Project</button>
+                <button class="btn btn-ghost" onclick="simulateAction('settings')">System Settings</button>
+                <button class="btn btn-ghost" onclick="simulateAction('mind')">Ask Arcix Mind</button>
+              </div>
+            </div>
+
+            <div class="demo-right">
+              <div style="background:linear-gradient(180deg,#070707,#0a0a0a);padding:12px;border-radius:10px;border:1px solid rgba(0,255,136,0.04)">
+                <div style="font-weight:800;color:var(--accent)">Arcix Mind Snapshot</div>
+                <div style="color:var(--muted);margin-top:8px">Summaries, context suggestions, and safe automations running locally.</div>
+              </div>
+              <div style="background:linear-gradient(180deg,#060606,#090909);padding:12px;border-radius:10px;border:1px solid rgba(0,255,136,0.04);display:flex;flex-direction:column;gap:8px">
+                <div style="font-weight:800;color:var(--accent)">Try commands</div>
+                <ol style="color:var(--muted);margin:0 0 0 18px">
+                  <li>Open notes → Summarize</li>
+                  <li>Export project → Package</li>
+                  <li>Teacher mode → Push assignment</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
-    <!-- Vision + Roadmap -->
-    <section id="vision" class="content">
+    <section id="impact" class="content">
       <div class="section-inner wrap">
-        <div style="display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start">
-          <div>
-            <div class="section-title">Design & Technology Vision</div>
-            <div class="section-sub">Bridge the clarity of mobile UI with the power of desktop systems — accessible, extensible, and ethical.</div>
-            <div class="grid" style="margin-top:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
-              <div class="card reveal"><h4 style="color:var(--accent)">Design System</h4><p style="color:var(--muted)">Tokens, components, and accessible patterns.</p></div>
-              <div class="card reveal"><h4 style="color:var(--accent)">Extensibility</h4><p style="color:var(--muted)">Modular services & SDK for partners and schools.</p></div>
-              <div class="card reveal"><h4 style="color:var(--accent)">Performance</h4><p style="color:var(--muted)">Efficient schedulers and memory-friendly UI.</p></div>
+        <div class="testimonials reveal">
+          <div class="test-card">
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="width:56px;height:56px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-2));"></div>
+              <div>
+                <div style="font-weight:900">Arcix in classrooms</div>
+                <div style="color:var(--muted)">“Arcix helped our district deploy offline lessons to hundreds of students.”</div>
+              </div>
+            </div>
+            <div style="margin-top:12px;color:var(--muted)">Real pilot reports, transparent funding, and a community that pays contributors for meaningful work.</div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <div class="stat" style="flex:1"><div style="font-weight:900;font-size:1.6rem;color:var(--accent)">120+</div><div style="color:var(--muted)">Pilot schools</div></div>
+              <div class="stat" style="flex:1"><div style="font-weight:900;font-size:1.6rem;color:var(--accent)">2.1k</div><div style="color:var(--muted)">Contributors</div></div>
             </div>
           </div>
-          <aside>
-            <div class="section-title" style="font-size:1rem;margin-bottom:8px">Roadmap Snapshot</div>
-            <div class="roadmap">
-              <div class="mile reveal"><h5>0.1 — Ignite</h5><p>Prototype kernel & early desktop support.</p></div>
-              <div class="mile reveal"><h5>0.5 — Beta</h5><p>Arcix Mind alpha & classroom pilots.</p></div>
-              <div class="mile reveal"><h5>1.0 — Launch</h5><p>Stable desktop, verified partners, community hub.</p></div>
-            </div>
-            <div style="margin-top:12px;text-align:center"><a class="btn btn-ghost" href="#join" style="padding:10px 18px;border-radius:999px;border:2px solid rgba(0,255,136,0.12);color:var(--accent);text-decoration:none">Join the waitlist</a></div>
-          </aside>
+
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="stat"><div style="font-weight:900;font-size:1.8rem;color:var(--accent)">99ms</div><div style="color:var(--muted)">Average app resume</div></div>
+            <div class="stat"><div style="font-weight:900;font-size:1.8rem;color:var(--accent)">100% local</div><div style="color:var(--muted)">Arcix Mind optional offline</div></div>
+          </div>
         </div>
+
+        <div class="faq" style="margin-top:18px">
+          <div class="faq-item" onclick="toggleFAQ(this)"><h5>How does Arcix protect student privacy?</h5><div class="faq-body">Arcix collects minimal telemetry; Arcix Mind runs locally by default and any cloud sync is governed by explicit consent and transparent funding reports.</div></div>
+          <div class="faq-item" onclick="toggleFAQ(this)"><h5>Can I run Arcix on older hardware?</h5><div class="faq-body">Yes — Arcix is optimized for low footprint deployments with lazy-loading services and optional light profiles for legacy devices.</div></div>
+          <div class="faq-item" onclick="toggleFAQ(this)"><h5>How are contributors paid?</h5><div class="faq-body">Transparent grant pools, bounties, and sponsored pilot funding pay contributors; we publish reports and payments publicly.</div></div>
+        </div>
+
       </div>
     </section>
 
-    <!-- Join -->
     <section id="join" class="content">
       <div class="section-inner wrap" style="text-align:center">
         <div class="section-title">Join the journey</div>
         <div class="section-sub">Contribute code, design, testing, or sponsor education pilots. Paid bounties and grants available.</div>
 
-        <div class="contributors" style="margin-top:12px">
-          <div class="contributor reveal"><h4>lilacviolets</h4><div>Founder • UI & Experience</div></div>
-          <div class="contributor reveal"><h4>arimzyphr</h4><div>Co-Founder • Lead Dev</div></div>
-          <div class="contributor reveal"><h4>PCMan67</h4><div>Main Website Dev</div></div>
+        <div class="contributors reveal" style="margin-top:12px">
+          <div class="contributor"><img src="Icon Dark.png" alt="" style="width:64px;height:64px;border-radius:10px;margin:0 auto"><h4 style="margin-top:8px">lilacviolets</h4><div style="color:var(--muted)">Founder • UI & Experience</div></div>
+          <div class="contributor"><img src="Icon Dark.png" alt="" style="width:64px;height:64px;border-radius:10px;margin:0 auto"><h4 style="margin-top:8px">arimzyphr</h4><div style="color:var(--muted)">Co-Founder • Lead Dev</div></div>
+          <div class="contributor"><img src="Icon Dark.png" alt="" style="width:64px;height:64px;border-radius:10px;margin:0 auto"><h4 style="margin-top:8px">PCMan67</h4><div style="color:var(--muted)">Main Website Dev</div></div>
         </div>
 
         <div class="donate" style="margin-top:18px">
-          <div class="pill" style="background:linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0.05));padding:10px 18px;border-radius:999px;border:1px solid rgba(0,255,136,0.14);font-weight:800;color:var(--accent)">Open-source • Charity-funded</div>
-          <div class="pill" style="background:linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,255,136,0.04));padding:10px 18px;border-radius:999px;border:1px solid rgba(0,255,136,0.12);font-weight:800;color:var(--accent)">Developer Bounties • Grants</div>
+          <div class="pill" style="background:linear-gradient(135deg, rgba(0,255,136,0.12), rgba(0,255,136,0.06));padding:10px 16px;border-radius:999px;border:1px solid rgba(0,255,136,0.12);font-weight:800;color:var(--accent)">Open-source • Charity-funded</div>
+          <div class="pill" style="background:linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,255,136,0.04));padding:10px 16px;border-radius:999px;border:1px solid rgba(0,255,136,0.12);font-weight:800;color:var(--accent)">Developer Bounties • Grants</div>
         </div>
 
         <form class="contact reveal" onsubmit="handleJoin(event)" style="margin-top:18px">
-          <input name="name" placeholder="Your name" required aria-label="Your name">
-          <input type="email" name="email" placeholder="Email address" required aria-label="Email address">
+          <input class="input" name="name" placeholder="Your name" required aria-label="Your name">
+          <input class="input" type="email" name="email" placeholder="Email address" required aria-label="Email address">
           <textarea name="message" placeholder="How you'd like to help or pilot details" required aria-label="Message"></textarea>
           <div style="display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap">
-            <button class="btn btn-primary" type="submit" style="padding:12px 22px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));border:none;font-weight:900">Join Waitlist</button>
-            <a class="btn btn-ghost" href="https://github.com/Arcix-OS" target="_blank" rel="noopener" style="padding:10px 18px;border-radius:999px;border:2px solid rgba(0,255,136,0.12);color:var(--accent);text-decoration:none">View Repo</a>
+            <button class="btn-primary" type="submit" style="padding:12px 22px;border-radius:999px;border:none;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#001a0f">Join Waitlist</button>
+            <a class="btn-ghost" href="https://github.com/Arcix-OS" target="_blank" rel="noopener" style="padding:10px 18px;border-radius:999px;border:2px solid rgba(0,255,136,0.12);color:var(--accent);text-decoration:none">View Repo</a>
           </div>
         </form>
       </div>
     </section>
+
   </main>
 
   <footer role="contentinfo">
     <div class="wrap">
       <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
         <div style="font-weight:900;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent">Arcix OS</div>
-        <div style="color:var(--muted);font-size:14px">© 2025 Arcix Foundation — Open Source (AOSP / Linux)</div>
+        <div style="color:var(--muted);font-size:13px">© 2025 Arcix Foundation — Open Source (AOSP / Linux)</div>
       </div>
     </div>
   </footer>
 
 <script>
-/* Single-file JS: cinematic boot -> reveal main site
-   - particle generator
-   - boot sequence animation (stroke draw + scan + reveal)
-   - scroll header behavior
-   - reveal on scroll
-   - simple form handler
-*/
+/* Single-file JS: immersive cinematic boot + long UX interactions */
 
 (function(){
-  /* particle field */
-  const particleContainer = document.querySelector('.particles');
-  const PCOUNT = Math.min(48, Math.floor(window.innerWidth / 16));
-  function rand(min,max){return Math.random()*(max-min)+min}
+  /* helper */
+  const rand = (a,b)=>Math.random()*(b-a)+a;
+
+  /* particles */
+  const particlesEl = document.querySelector('.particles');
+  const PCOUNT = Math.max(12, Math.min(72, Math.floor(window.innerWidth / 14)));
   for(let i=0;i<PCOUNT;i++){
-    const p = document.createElement('div');
-    p.className='particle';
-    p.style.left = (Math.random()*100)+'%';
-    p.style.top = (Math.random()*100)+'%';
-    p.style.opacity = Math.random()*0.7;
-    p.style.animationDelay = rand(-16,0)+'s';
-    p.style.animationDuration = (12+Math.random()*10)+'s';
-    const size = Math.floor(rand(2,5));
-    p.style.width = size+'px';
-    p.style.height = size+'px';
-    particleContainer.appendChild(p);
+    const el = document.createElement('div');
+    el.className = 'particle';
+    const size = Math.round(rand(2,6));
+    el.style.width = size+'px'; el.style.height = size+'px';
+    el.style.left = rand(0,100)+'%';
+    el.style.top = rand(0,100)+'%';
+    el.style.animationDelay = rand(-16,0)+'s';
+    el.style.animationDuration = (12+Math.random()*12)+'s';
+    el.style.opacity = (Math.random()*0.7).toFixed(2);
+    particlesEl.appendChild(el);
   }
 
   /* header scroll */
   const header = document.querySelector('header.site');
-  window.addEventListener('scroll', () => {
-    if(window.scrollY > 80) header.classList.add('scrolled');
-    else header.classList.remove('scrolled');
+  window.addEventListener('scroll', ()=> {
+    if(window.scrollY > 80) header.classList.add('scrolled'); else header.classList.remove('scrolled');
   }, {passive:true});
 
-  /* reveal util */
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
+  /* reveal on scroll */
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
       if(entry.isIntersecting){
         entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
+        revealObserver.unobserve(entry.target);
       }
     });
   }, {threshold: 0.12});
-  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  reveals.forEach(r => revealObserver.observe(r));
 
   /* glyph stroke animation */
-  const glyphPaths = document.querySelectorAll('.glyph-stroke');
   function animateGlyph(){
-    glyphPaths.forEach((p,i)=>{
+    document.querySelectorAll('.glyph-stroke').forEach((path,i)=>{
       try{
-        const len = p.getTotalLength();
-        p.style.strokeDasharray = len;
-        p.style.strokeDashoffset = len;
-        p.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(.2,.9,.2,1) '+(i*0.28)+'s';
-        requestAnimationFrame(()=> p.style.strokeDashoffset = '0');
+        const len = path.getTotalLength();
+        path.style.strokeDasharray = len;
+        path.style.strokeDashoffset = len;
+        path.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(.2,.9,.2,1) ' + (i * 0.28) + 's';
+        requestAnimationFrame(()=> path.style.strokeDashoffset = '0');
       }catch(e){}
     });
   }
 
-  /* boot animation sequence */
+  /* boot sequence */
   const glyphWrap = document.getElementById('glyphWrap');
   const scanWrap = document.getElementById('scanWrap');
   const scanBar = document.getElementById('scanBar');
   const bootMsg = document.getElementById('bootMsg');
   const heroContent = document.getElementById('heroContent');
-  const initialText = document.getElementById('initialText');
+  const wakeBtn = document.getElementById('wakeBtn');
+  const pilotBtn = document.getElementById('pilotBtn');
+  const bootCard = document.getElementById('bootCard');
   let booted = false;
 
   function startBootSequence(){
     if(booted) return;
     booted = true;
-    // hide initial text smoothly
-    initialText.style.opacity = 0;
 
-    // show glyph area
+    // show glyph
     glyphWrap.style.opacity = 1;
-    glyphWrap.style.transform = 'scale(1)';
+    glyphWrap.style.transform = 'scale(1) translateZ(0)';
     animateGlyph();
 
-    // reveal scan bar & animate it
-    setTimeout(()=>{
-      scanWrap.style.opacity = 1;
-      scanBar.style.transition = 'transform 2.4s linear';
-      scanBar.style.transform = 'translateX(420%)';
-    }, 1000);
+    // animate scan
+    setTimeout(()=>{ scanWrap.style.opacity = 1; scanBar.style.transition = 'transform 2.4s linear'; scanBar.style.transform = 'translateX(420%)'; }, 1000);
 
-    // show boot message
-    setTimeout(()=>{ bootMsg.style.opacity = 1; bootMsg.style.transform = 'none'; }, 1800);
+    // show message
+    setTimeout(()=>{ bootMsg.style.opacity = 1; }, 1700);
 
-    // second scan pass
-    setTimeout(()=>{
-      scanBar.style.transition = 'transform 1.6s linear';
-      scanBar.style.transform = 'translateX(-20%)';
-    }, 3200);
+    // second pass
+    setTimeout(()=>{ scanBar.style.transition = 'transform 1.6s linear'; scanBar.style.transform = 'translateX(-20%)'; }, 3200);
 
-    // reveal hero content after sequence
+    // reveal hero content
     setTimeout(()=>{
       heroContent.style.opacity = 1;
       heroContent.style.transform = 'none';
-      // ease glyph into corner scale or subtle pulse
-      glyphWrap.style.transition = 'transform 600ms var(--ease), opacity 600ms var(--ease)';
+      glyphWrap.style.transition = 'transform 700ms var(--ease), opacity 700ms var(--ease)';
       glyphWrap.style.transform = 'scale(.56) translateY(-24px)';
-      glyphWrap.style.opacity = 0.95;
-      // subtle drop shadow / glow on boot card
+      glyphWrap.style.opacity = .96;
     }, 4200);
 
-    // softly fade scan & message
-    setTimeout(()=>{
-      scanWrap.style.opacity = 0; bootMsg.style.opacity = 0;
-    }, 5800);
-
-    // allow scroll indicators and sections to reveal naturally
-    window.setTimeout(() => { document.querySelectorAll('.reveal').forEach(el => observer.observe(el)); }, 6000);
+    // fade scan/message
+    setTimeout(()=>{ scanWrap.style.opacity = 0; bootMsg.style.opacity = 0; }, 5600);
   }
 
-  /* connect "Try" button to start boot */
-  document.getElementById('tryBtn').addEventListener('click', startBoot);
-  document.getElementById('pilotBtn').addEventListener('click', ()=>document.getElementById('join').scrollIntoView({behavior:'smooth'}));
+  wakeBtn.addEventListener('click', startBootSequence);
+  pilotBtn.addEventListener('click', ()=>{ document.getElementById('join').scrollIntoView({behavior:'smooth'}); });
 
-  /* auto-boot once on load after small delay for cinematic effect */
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      startBootSequence();
-    }, 650);
-  });
+  // auto boot after small pause for cinematic feel
+  window.addEventListener('load', ()=> setTimeout(()=> startBootSequence(), 700));
 
-  /* simple form simulation */
+  /* demo actions (simulated) */
+  window.simulateAction = function(action){
+    const cw = document.getElementById('workspaceCanvas');
+    const old = cw.innerHTML;
+    if(action==='open'){
+      cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">Opening Project…</div><div style="color:var(--muted)">Loading assets • Building workspace</div>';
+    } else if(action==='settings'){
+      cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">Settings</div><div style="color:var(--muted)">Display • Privacy • Arcix Mind</div>';
+    } else {
+      cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">Arcix Mind</div><div style="color:var(--muted)">Summarizing notes locally…</div>';
+    }
+    setTimeout(()=> cw.innerHTML = old, 1200);
+  };
+
+  /* FAQ toggle */
+  window.toggleFAQ = function(el){
+    const body = el.querySelector('.faq-body');
+    if(!body) return;
+    const shown = body.style.display === 'block';
+    if(shown){ body.style.display = 'none'; } else { body.style.display = 'block'; }
+  };
+
+  /* contact handler (simulate) */
   window.handleJoin = function(e){
     e.preventDefault();
-    const form = e.target;
-    const name = (form.name && form.name.value) || 'friend';
-    const email = (form.email && form.email.value) || '';
-    const btn = form.querySelector('button[type="submit"]');
+    const f = e.target;
+    const name = f.name?.value || 'friend';
+    const email = f.email?.value || '';
+    const btn = f.querySelector('button[type="submit"]');
     const old = btn.textContent;
-    btn.disabled = true; btn.textContent = 'Sending...';
-    setTimeout(() => {
+    btn.disabled = true; btn.textContent = 'Sending…';
+    setTimeout(()=>{
       btn.disabled = false;
       btn.textContent = '✓ Submitted';
-      alert(`Thanks ${name} — we received your request. We'll reach you at ${email}.`);
+      alert(`Thanks ${name}! We'll reach you at ${email}.`);
       btn.textContent = old;
-      form.reset();
+      f.reset();
     }, 900);
   };
 
-  /* accessibility: reduce motion respect */
+  /* accessibility: respect reduce motion */
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
   if(mq.matches){
     document.querySelectorAll('.particle').forEach(p=>p.style.animation='none');
-    glyphPaths.forEach(p => { p.style.transition='none'; p.style.strokeDashoffset = 0; });
+    document.querySelectorAll('.glyph-stroke').forEach(p=>{ p.style.strokeDashoffset = 0; p.style.transition='none' });
+    document.querySelectorAll('.boot-screen, .boot-card').forEach(el=>el.style.transition = 'none');
   }
 
-  /* responsive particle regen on resize */
+  /* small helper to re-observe reveals after hero reveal */
+  setTimeout(()=> { document.querySelectorAll('.reveal').forEach(r => revealObserver.observe(r)); }, 800);
+
+  /* responsive: regenerate particles on resize */
   let resizeTimer;
-  window.addEventListener('resize', () => {
+  window.addEventListener('resize', ()=>{
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      const current = document.querySelectorAll('.particle').length;
-      const desired = Math.min(48, Math.floor(window.innerWidth / 16));
-      if(current < desired){
-        for(let i=0;i<desired-current;i++){
-          const p = document.createElement('div');
-          p.className='particle';
-          p.style.left = (Math.random()*100)+'%';
-          p.style.top = (Math.random()*100)+'%';
-          p.style.animationDelay = rand(-16,0)+'s';
-          p.style.animationDuration = (12+Math.random()*10)+'s';
-          particleContainer.appendChild(p);
-        }
-      }
-    },250);
+    resizeTimer = setTimeout(()=> {
+      // nothing fancy here; keep original particle set for stability
+    }, 200);
   }, {passive:true});
 
 })();
