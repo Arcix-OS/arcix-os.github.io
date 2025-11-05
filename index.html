@@ -30,7 +30,6 @@
   a{color:var(--accent);text-decoration:none;transition:all .3s var(--ease)}
   a:hover{color:var(--accent-strong)}
 
-  /* Animated background */
   body::before{
     content:'';
     position:fixed;
@@ -47,7 +46,6 @@
     50%{transform:translate(3%,-3%) rotate(180deg)}
   }
 
-  /* Particles */
   .particles{
     position:fixed;
     inset:0;
@@ -72,7 +70,6 @@
     100%{transform:translateY(-100vh);opacity:0}
   }
 
-  /* Header */
   header{
     position:fixed;
     top:0;
@@ -132,7 +129,14 @@
     to{transform:translate(100%,100%)}
   }
   
-  .brand img{width:36px;height:36px;position:relative;z-index:2}
+  .brand .logo-placeholder{
+    width:36px;
+    height:36px;
+    position:relative;
+    z-index:2;
+    background:linear-gradient(135deg,var(--accent),var(--accent-strong));
+    border-radius:8px;
+  }
   .brand .title{
     font-weight:900;
     font-size:1.1rem;
@@ -184,7 +188,6 @@
     box-shadow:0 8px 30px rgba(0,255,136,.5);
   }
 
-  /* Hero */
   .hero{
     position:relative;
     min-height:100vh;
@@ -237,10 +240,11 @@
     50%{transform:translateY(-20px)}
   }
 
-  .logo-wrap img{
+  .logo-wrap .logo-placeholder{
     width:100%;
     height:100%;
-    object-fit:contain;
+    background:linear-gradient(135deg,var(--accent),var(--accent-strong));
+    border-radius:20px;
     filter:drop-shadow(0 10px 20px rgba(0,255,136,.5));
   }
 
@@ -617,7 +621,7 @@
     position:relative;
     z-index:2;
   }
-  footer>div{
+  footer .wrap{
     display:flex;
     flex-direction:column;
     gap:12px;
@@ -630,6 +634,21 @@
     -webkit-background-clip:text;
     background-clip:text;
     color:transparent;
+  }
+  footer .links-footer{
+    display:flex;
+    gap:24px;
+    margin:16px 0;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  footer .links-footer a{
+    color:var(--muted);
+    font-weight:600;
+    transition:color .3s;
+  }
+  footer .links-footer a:hover{
+    color:var(--accent);
   }
 
   .scroll-indicator{
@@ -678,7 +697,7 @@
   <header>
     <div class="nav">
       <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-        <div class="mini"><img src="Icon Dark.png" alt="Arcix logo"></div>
+        <div class="mini"><div class="logo-placeholder"></div></div>
         <div class="title">Arcix OS</div>
       </div>
 
@@ -696,7 +715,7 @@
     <section class="hero">
       <div class="hero-inner">
         <div class="logo-wrap">
-          <img src="Icon Dark.png" alt="Arcix logo">
+          <div class="logo-placeholder"></div>
         </div>
 
         <h1 class="title">Arcix OS</h1>
@@ -835,20 +854,3 @@
         <div class="donate">
           <div class="pill">Open-source • Charity-funded</div>
           <div class="pill">Developer Bounties • Education Grants</div>
-        </div>
-
-        <form class="contact" onsubmit="handleJoin(event)">
-          <input name="name" placeholder="Your name" required />
-          <input type="email" name="email" placeholder="Email address" required />
-          <textarea name="message" placeholder="How you'd like to help or pilot details" required></textarea>
-          <div style="display:flex;gap:16px;justify-content:center;margin-top:12px;flex-wrap:wrap">
-            <button class="btn btn-primary" type="submit">Join Waitlist</button>
-            <a class="btn btn-ghost" href="https://github.com/Arcix-OS" target="_blank" rel="noopener">View Repo</a>
-          </div>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap">
