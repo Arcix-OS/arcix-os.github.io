@@ -30,6 +30,14 @@
   a{color:var(--accent);text-decoration:none;transition:all .3s var(--ease)}
   a:hover{color:var(--accent-strong)}
 
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   body::before{
     content:'';
     position:fixed;
@@ -102,6 +110,7 @@
     gap:12px;
     cursor:pointer;
     transition:transform .3s;
+    text-decoration:none;
   }
   .brand:hover{transform:scale(1.05)}
   
@@ -186,6 +195,45 @@
   .cta-top:hover{
     transform:translateY(-2px);
     box-shadow:0 8px 30px rgba(0,255,136,.5);
+  }
+
+  .mobile-menu-btn{
+    display:none;
+    background:none;
+    border:none;
+    color:var(--accent);
+    font-size:1.8rem;
+    cursor:pointer;
+    padding:8px;
+    z-index:101;
+  }
+
+  .mobile-menu{
+    display:none;
+    position:fixed;
+    top:80px;
+    left:0;
+    right:0;
+    background:rgba(0,0,0,.98);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(0,255,136,.2);
+    padding:20px;
+    flex-direction:column;
+    gap:12px;
+    z-index:99;
+  }
+  .mobile-menu.active{display:flex}
+  .mobile-menu a{
+    color:var(--fg);
+    font-weight:600;
+    padding:12px;
+    border-radius:10px;
+    text-align:center;
+    transition:all .2s;
+  }
+  .mobile-menu a:hover{
+    color:var(--accent);
+    background:rgba(0,255,136,.05);
   }
 
   .hero{
@@ -354,6 +402,7 @@
     transition:all .3s;
     position:relative;
     overflow:hidden;
+    text-decoration:none;
   }
   
   .btn-primary{
@@ -600,6 +649,11 @@
     font-size:1rem;
     transition:all .3s;
   }
+  input::placeholder,
+  textarea::placeholder{
+    color:var(--muted);
+    opacity:.6;
+  }
   input:focus,textarea:focus{
     outline:none;
     border-color:var(--accent);
@@ -611,6 +665,19 @@
     resize:vertical;
     font-family:inherit;
   }
+
+  .form-success{
+    display:none;
+    background:rgba(0,255,136,.1);
+    border:2px solid var(--accent);
+    border-radius:12px;
+    padding:20px;
+    text-align:center;
+    color:var(--accent);
+    font-weight:600;
+    margin-top:20px;
+  }
+  .form-success.show{display:block}
 
   footer{
     padding:60px 20px;
@@ -684,38 +751,53 @@
     .hero{padding:100px 18px 60px}
     h1.title{font-size:2.5rem}
     nav.links{display:none}
+    .mobile-menu-btn{display:block}
     .logo-wrap{width:140px;height:140px}
     .section-title{font-size:1.8rem}
     .roadmap::before{display:none}
     .mile::before{top:50%;left:-12px;transform:translateY(-50%)}
+    .subtitle::before,
+    .subtitle::after{display:none}
   }
 </style>
 </head>
 <body>
   <div class="particles"></div>
 
-  <header>
+  <header id="header">
     <div class="nav">
-      <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-        <div class="mini"><div class="logo-placeholder"></div></div>
+      <a href="#" class="brand" aria-label="Arcix OS Home">
+        <div class="mini">
+          <div class="logo-placeholder" role="img" aria-label="Arcix OS Logo"></div>
+        </div>
         <div class="title">Arcix OS</div>
-      </div>
+      </a>
 
-      <nav class="links">
+      <nav class="links" aria-label="Main navigation">
         <a href="#features">Features</a>
         <a href="#vision">Vision</a>
         <a href="#roadmap">Roadmap</a>
         <a href="#join">Join</a>
         <a class="cta-top" href="#join">Get Involved</a>
       </nav>
+
+      <button class="mobile-menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
     </div>
+
+    <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile navigation">
+      <a href="#features">Features</a>
+      <a href="#vision">Vision</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#join">Join</a>
+      <a class="cta-top" href="#join">Get Involved</a>
+    </nav>
   </header>
 
   <main>
     <section class="hero">
       <div class="hero-inner">
         <div class="logo-wrap">
-          <div class="logo-placeholder"></div>
+          <div class="logo-placeholder" role="img" aria-label="Arcix OS Main Logo"></div>
         </div>
 
         <h1 class="title">Arcix OS</h1>
@@ -724,7 +806,7 @@
 
         <div class="made-for">
           <div class="label">Made for</div>
-          <div class="typed">
+          <div class="typed" aria-label="Made for students, creators, developers, teachers, everyone, and you">
             <span>students</span>
             <span>creators</span>
             <span>developers</span>
@@ -736,7 +818,7 @@
 
         <div class="cta-row">
           <a class="btn btn-primary" href="https://github.com/Arcix-OS" target="_blank" rel="noopener">Contribute on GitHub</a>
-          <button class="btn btn-ghost" onclick="document.getElementById('join').scrollIntoView({behavior:'smooth'})">Request a School Pilot</button>
+          <a class="btn btn-ghost" href="#join">Request a School Pilot</a>
         </div>
 
         <div class="panels">
@@ -755,14 +837,14 @@
         </div>
       </div>
 
-      <div class="scroll-indicator">
+      <div class="scroll-indicator" aria-hidden="true">
         <span>Scroll</span>
       </div>
     </section>
 
     <section id="features" class="content">
       <div class="section-inner">
-        <h3 class="section-title">Why Arcix OS?</h3>
+        <h2 class="section-title">Why Arcix OS?</h2>
         <p class="section-sub">Productivity, privacy, and purpose — in one open OS.</p>
 
         <div class="grid cols-3">
@@ -807,7 +889,7 @@
 
     <section id="vision" class="content">
       <div class="section-inner">
-        <h3 class="section-title">The Vision</h3>
+        <h2 class="section-title">The Vision</h2>
         <p class="section-sub">Arcix OS aims to combine the clarity of mobile platforms with the power of desktop computing — all while remaining open, community-oriented, and accessible to everyone.</p>
 
         <div class="roadmap" id="roadmap">
@@ -833,7 +915,7 @@
 
     <section id="join" class="content">
       <div class="section-inner">
-        <h3 class="section-title">Join the Journey</h3>
+        <h2 class="section-title">Join the Journey</h2>
         <p class="section-sub">Arcix OS is in active development. Join us — contribute code, design, testing, or sponsor education pilots. We publish funding reports and contributor payments for transparency.</p>
 
         <div class="contributors">
@@ -854,3 +936,116 @@
         <div class="donate">
           <div class="pill">Open-source • Charity-funded</div>
           <div class="pill">Developer Bounties • Education Grants</div>
+        </div>
+
+        <form class="contact" id="contactForm">
+          <input type="text" name="name" placeholder="Your Name" required aria-label="Your name">
+          <input type="email" name="email" placeholder="Your Email" required aria-label="Your email">
+          <input type="text" name="subject" placeholder="Subject" required aria-label="Subject">
+          <textarea name="message" placeholder="Tell us about your interest in Arcix OS..." required aria-label="Your message"></textarea>
+          <button type="submit" class="btn btn-primary" style="justify-self:center">Send Message</button>
+        </form>
+
+        <div class="form-success" id="formSuccess">
+          Thanks for reaching out! We'll get back to you soon.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div>Arcix OS</div>
+      <p>Open-source, community-funded, built for everyone.</p>
+      <div class="links-footer">
+        <a href="https://github.com/Arcix-OS" target="_blank" rel="noopener">GitHub</a>
+        <a href="#features">Features</a>
+        <a href="#vision">Vision</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#join">Join Us</a>
+      </div>
+      <p style="margin-top:20px;font-size:.9rem;opacity:.7">&copy; 2024 Arcix OS. Open source under permissive license.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Particle generation
+    const particlesContainer = document.querySelector('.particles');
+    const particleCount = 30;
+    
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 12 + 's';
+      particle.style.animationDuration = (8 + Math.random() * 8) + 's';
+      particlesContainer.appendChild(particle);
+    }
+
+    // Header scroll effect
+    const header = document.getElementById('header');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+      
+      lastScroll = currentScroll;
+    });
+
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+      menuBtn.textContent = mobileMenu.classList.contains('active') ? '✕' : '☰';
+    });
+
+    // Close mobile menu when clicking a link
+    const mobileLinks = mobileMenu.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        menuBtn.textContent = '☰';
+      });
+    });
+
+    // Form submission
+    const contactForm = document.getElementById('contactForm');
+    const formSuccess = document.getElementById('formSuccess');
+
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Simulate form submission
+      formSuccess.classList.add('show');
+      contactForm.reset();
+      
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        formSuccess.classList.remove('show');
+      }, 5000);
+    });
+
+    // Smooth scroll for all internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
