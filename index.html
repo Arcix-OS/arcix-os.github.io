@@ -1,629 +1,453 @@
 <!doctype html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Arcix OS — A new generation of operating systems.</title>
-<meta name="description" content="Arcix OS — privacy-first, community-funded, cinematic OS experience. In active development by lilacviolets & arimzyphr. 50% charity • 50% maintenance." />
-<link rel="icon" href="Icon Dark.png" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<title>Arcix OS — Boot Experience</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#000;
-  --fg:#e8fff0;
-  --muted:#9fbfb0;
-  --accent:#00ff88;
-  --accent-2:#66ffb8;
-  --accent-strong:#00cc66;
-  --glass:rgba(255,255,255,0.03);
-  --card:#070707;
-  --radius:18px;
-  --max:1400px;
-  --ease:cubic-bezier(.2,.9,.2,1);
-  --nav-h:78px;
-  --shadow-glow:0 30px 90px rgba(0,255,136,0.06);
-}
+  :root{
+    --bg-0:#040206;
+    --bg-1:#07060b;
+    --glass: rgba(255,255,255,0.04);
+    --muted: #bfc9ff;
+    --accent-1: #b78fff;
+    --accent-2: #66d6ff;
+    --accent-strong:#7a4cff;
+    --neon: rgba(183,143,255,0.12);
+    --radius:18px;
+    --ease: cubic-bezier(.2,.9,.2,1);
+  }
 
-/* Base reset */
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
-body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;line-height:1.45;overflow-x:hidden;scroll-behavior:smooth}
-a{color:var(--accent);text-decoration:none}
-img{display:block;max-width:100%}
+  /* Reset */
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(120,80,200,0.06), transparent 6%),
+                radial-gradient(800px 400px at 90% 90%, rgba(60,200,255,0.03), transparent 8%),
+                linear-gradient(180deg,var(--bg-0),var(--bg-1));
+    color: #e9eefc;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow:hidden;
+  }
 
-/* Ambient animated background layers */
-.bg-layer{
-position:fixed;inset:0;pointer-events:none;z-index:0;mix-blend-mode:screen;
-background:
-radial-gradient(900px 400px at 12% 18%, rgba(0,255,136,0.06), transparent 12%),
-radial-gradient(640px 420px at 88% 82%, rgba(0,200,120,0.04), transparent 12%),
-linear-gradient(180deg, rgba(0,0,0,0.72), rgba(0,0,0,0.94));
-animation:driftBG 30s ease-in-out infinite;
-opacity:0.95;
-}
-@keyframes driftBG{0%{transform:translate(0,0)}33%{transform:translate(-3%,2%)}66%{transform:translate(3%,-2%)}100%{transform:translate(0,0)}}
+  /* fullscreen container */
+  .stage{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    padding:32px; gap:28px;flex-direction:column;
+  }
 
-/* Layout primitives */
-.wrap{max-width:var(--max);margin:0 auto;padding:0 24px;position:relative;z-index:60}
-header.site{position:fixed;inset:0 0 auto 0;height:var(--nav-h);display:flex;align-items:center;z-index:220;background:linear-gradient(180deg, rgba(0,0,0,0.14), rgba(0,0,0,0.06));backdrop-filter: blur(12px) saturate(140%);border-bottom:1px solid rgba(0,255,136,0.04);transition:all .45s var(--ease)}
-header.site.scrolled{background:linear-gradient(180deg, rgba(0,0,0,0.82), rgba(0,0,0,0.56));box-shadow:var(--shadow-glow);border-bottom-color:rgba(0,255,136,0.08)}
-.nav{display:flex;align-items:center;justify-content:space-between;width:100%;gap:12px;padding:0 18px}
-.brand{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
-.mini{width:56px;height:56px;border-radius:12px;padding:8px;background:linear-gradient(135deg,#000,#0a0a0a);border:1px solid rgba(0,255,136,0.12);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(0,255,136,0.04), inset 0 1px 0 rgba(255,255,255,0.02);position:relative;overflow:hidden}
-.mini::before{content:"";position:absolute;inset:-120%;background:linear-gradient(45deg,transparent,rgba(0,255,136,0.06),transparent);animation:miniShine 3.6s linear infinite}
-@keyframes miniShine{to{transform:translate(140%,140%) rotate(12deg)}}
-.brand .title{font-weight:900;font-size:1.05rem;background:linear-gradient(90deg,var(--accent),var(--accent-2),#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
-nav.links{display:flex;gap:8px;align-items:center}
-nav.links a{padding:10px 14px;border-radius:10px;font-weight:700;color:var(--fg);transition:all .22s var(--ease)}
-nav.links a:hover{color:var(--accent);transform:translateY(-2px);background:rgba(0,255,136,0.03)}
-.cta-top{padding:10px 18px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#001a0f;font-weight:900;border:none;cursor:pointer;box-shadow:0 10px 40px rgba(0,255,136,0.12)}
-.mobile-toggle{display:none;background:transparent;border:0;color:var(--accent);font-size:1.6rem;cursor:pointer}
+  /* glass shell */
+  .shell{
+    width:min(1100px,92vw);
+    height:min(720px,86vh);
+    border-radius:20px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(183,143,255,0.06);
+    box-shadow: 0 40px 120px rgba(110,64,220,0.08), inset 0 1px 0 rgba(255,255,255,0.02);
+    overflow:hidden; position:relative; display:flex; flex-direction:column;
+    backdrop-filter: blur(10px) saturate(120%);
+  }
 
-/* Particle layer - optimized */
-.particles{position:fixed;inset:0;z-index:10;pointer-events:none}
-.particle{position:absolute;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);opacity:0;transform:translateY(0);animation:rise 14s linear infinite}
-@keyframes rise{0%{transform:translateY(120vh) scale(.2);opacity:0}6%{opacity:.6}88%{opacity:.24}100%{transform:translateY(-140vh) scale(1)}}
+  /* top nav area */
+  .shell-top{
+    height:78px; display:flex; align-items:center; gap:18px; padding:12px 22px;
+    border-bottom:1px solid rgba(255,255,255,0.02);
+  }
+  .brand{
+    display:flex;align-items:center;gap:14px;cursor:default;user-select:none;
+  }
+  .mini{
+    width:56px;height:56px;border-radius:12px;padding:10px;
+    background: linear-gradient(135deg,#030205,#0a0810);
+    border: 1px solid rgba(183,143,255,0.12);
+    display:flex;align-items:center;justify-content:center; position:relative; overflow:hidden;
+    box-shadow: 0 6px 30px rgba(120,70,220,0.06);
+  }
+  .mini svg{width:100%;height:100%;filter: drop-shadow(0 10px 40px rgba(120,70,220,0.08))}
+  .title{
+    font-weight:800;font-size:1.05rem;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .meta{margin-left:auto;color:var(--muted);font-weight:700;font-size:.92rem;opacity:.9}
 
-/* Button primitives with robust micro-interactions */
-.btn{
-display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:999px;font-weight:800;border:none;cursor:pointer;transition:transform .24s var(--ease),box-shadow .24s var(--ease),opacity .2s linear;position:relative;overflow:hidden;background:transparent;color:var(--fg)
-}
-.btn::after{content:"";position:absolute;inset:0;border-radius:999px;transform:scale(0.98);background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));transition:transform .36s var(--ease),opacity .36s var(--ease);opacity:1}
-.btn:hover::after{transform:scale(1.06);opacity:1}
-.btn:active{transform:translateY(1px) scale(.995)}
-.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#001a0f;box-shadow:0 12px 48px rgba(0,255,136,0.12);will-change:transform}
-.btn-primary:hover{transform:translateY(-5px) scale(1.04);box-shadow:0 24px 100px rgba(0,255,136,0.18)}
-.btn-ghost{background:transparent;border:2px solid rgba(0,255,136,0.12);color:var(--accent);backdrop-filter:blur(6px)}
-.btn-ghost:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,255,136,0.06);border-color:rgba(0,255,136,0.22)}
+  /* main boot screen */
+  .boot-area{
+    flex:1; display:flex; align-items:center; justify-content:center; position:relative;
+    padding:28px;
+    background:
+      radial-gradient(800px 420px at 10% 30%, rgba(120,70,220,0.03), transparent 10%),
+      linear-gradient(180deg, rgba(2,2,2,0.7), rgba(6,6,6,0.9));
+  }
 
-/* HERO: cinematic boot card */
-main{position:relative;z-index:50}
-.hero{min-height:120vh;padding-top:calc(var(--nav-h) + 24px);display:flex;align-items:center;justify-content:center;position:relative;text-align:center;perspective:1400px}
-.hero-inner{max-width:1200px;margin:0 auto;padding:40px 20px;display:grid;gap:22px;align-items:center;justify-items:center}
-.boot-card{width:920px;max-width:96vw;border-radius:26px;padding:28px;background:linear-gradient(180deg, rgba(6,6,6,0.88), rgba(10,10,10,0.7));border:1px solid rgba(0,255,136,0.04);box-shadow:0 60px 140px rgba(0,255,136,0.03), inset 0 1px 0 rgba(255,255,255,0.02);overflow:hidden;position:relative;transform-style:preserve-3d}
-.boot-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.small-dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.03)}
-.boot-meta{font-size:.88rem;color:var(--muted);font-weight:700}
+  /* left: glyph & scan */
+  .left{
+    width:55%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px;
+  }
 
-/* boot screen visuals */
-.boot-screen{height:540px;border-radius:16px;background:linear-gradient(180deg,#020202,#080808);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(60% 50% at 50% 28%, rgba(0,0,0,0), rgba(0,0,0,0.6));mix-blend-mode:multiply}
-.film{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);background-size:2px 2px;opacity:0.08;mix-blend-mode:overlay}
+  .glyph-wrap{
+    width:360px;height:360px;border-radius:20px;display:grid;place-items:center;
+    transform-style:preserve-3d;
+    transition: transform .6s var(--ease);
+    position:relative;
+  }
+  .glyph-card{
+    width:86%; height:86%; border-radius:14px; display:grid; place-items:center;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(183,143,255,0.06);
+    box-shadow: 0 30px 80px rgba(120,70,220,0.06), inset 0 1px 0 rgba(255,255,255,0.02);
+    position:relative; overflow:hidden;
+  }
+  .glyph-svg{ width:64%; height:64%; filter: drop-shadow(0 28px 64px rgba(120,70,220,0.14)); opacity:0.98}
 
-/* big glyph with parallax and stroke animation */
-.glyph-wrap{width:340px;height:340px;display:grid;place-items:center;transform:translateZ(80px) scale(.98);opacity:0;transition:transform .7s var(--ease),opacity .7s var(--ease)}
-.glyph-svg{width:100%;height:100%;filter:drop-shadow(0 28px 84px rgba(0,255,136,0.16))}
-.glyph-stroke{stroke:var(--accent-2);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.glyph-glow{filter:blur(6px);opacity:.32;mix-blend-mode:screen}
+  /* stroke style */
+  .glyph-stroke { stroke: url(#ggrad); stroke-width:3; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+  .glyph-glow { filter: blur(6px); opacity:0.32; mix-blend-mode: screen; }
 
-/* scan progress and log lines */
-.scan-wrap{width:560px;height:12px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,255,136,0.02));overflow:hidden;margin-top:18px;opacity:0;transition:opacity .6s var(--ease)}
-.scan-bar{height:100%;width:10%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transform:translateX(-160%);will-change:transform;transition:transform 2.2s linear}
-.boot-log{margin-top:12px;color:var(--muted);font-weight:700;opacity:0;transition:opacity .6s var(--ease);font-size:.95rem}
+  /* scan and log */
+  .scan-wrap{ width:64%; height:12px; border-radius:999px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(183,143,255,0.02)); overflow:hidden; }
+  .scan-bar{ height:100%; width:10%; background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); transform:translateX(-160%); transition: transform 2.2s linear; will-change:transform; }
 
-/* hero after boot */
-.hero-title{font-weight:900;font-size:clamp(2.2rem,6.5vw,4.6rem);line-height:0.95;margin:10px 0;color:transparent;background:linear-gradient(90deg,var(--accent),var(--accent-2),#fff);-webkit-background-clip:text;background-clip:text;text-shadow:0 0 80px rgba(0,255,136,0.06)}
-.hero-sub{color:var(--muted);max-width:920px;margin:0 auto;font-size:1.05rem}
-.hero-actions{display:flex;gap:14px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+  .boot-log{ margin-top:10px; color:var(--muted); font-weight:700; opacity:0; transition:opacity .36s ease; font-size:0.95rem; min-height:28px; text-align:center; }
 
-/* content */
-.content{padding:88px 20px;position:relative;z-index:50}
-.section-inner{max-width:var(--max);margin:0 auto}
-.section-title{font-size:2.28rem;font-weight:900;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:12px}
-.section-sub{color:var(--muted);margin-bottom:28px}
+  /* right: status & terminal */
+  .right{
+    width:42%; display:flex; flex-direction:column; gap:18px; align-items:stretch; justify-content:center;
+  }
 
-/* grid & demo */
-.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.feature{background:linear-gradient(180deg, rgba(6,6,6,0.78), rgba(10,10,10,0.6));border-radius:14px;padding:20px;border:1px solid rgba(0,255,136,0.06);transition:transform .36s var(--ease),box-shadow .36s var(--ease)}
-.feature:hover{transform:translateY(-10px);box-shadow:0 30px 90px rgba(0,255,136,0.04);border-color:rgba(0,255,136,0.12)}
-.feature h4{color:var(--accent);margin:0 0 10px}
-.feature p{color:var(--muted);font-size:.98rem;line-height:1.6}
+  .status-card{
+    padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
+    border:1px solid rgba(255,255,255,0.02); font-weight:700; color:var(--muted);
+  }
 
-.demo-stage{margin-top:28px;border-radius:14px;padding:18px;background:linear-gradient(180deg,#060606,#0a0a0a);border:1px solid rgba(0,255,136,0.04);display:grid;grid-template-columns:1fr 380px;gap:18px;align-items:start}
-.desktop-window{flex:1;border-radius:10px;background:linear-gradient(180deg,#050505,#0a0a0a);display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;border:1px solid rgba(255,255,255,0.02);min-height:220px}
-.demo-right{display:flex;flex-direction:column;gap:10px}
+  .terminal{
+    background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(12,10,14,0.6));
+    border-radius:12px;padding:14px;border:1px solid rgba(183,143,255,0.04);
+    color:#bcd6ff;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+    font-size:0.92rem; min-height:220px; overflow:auto; line-height:1.45;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+  }
 
-/* testimonials / transparency */
-.testimonials{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:start;margin-top:24px}
+  .term-line{opacity:0.0; transform: translateY(6px); transition: all .28s var(--ease); white-space:nowrap;}
+  .term-line.visible{ opacity:1; transform: none; }
 
-/* FAQ & join */
-.faq{margin-top:22px;display:grid;gap:12px}
-.faq-item{background:linear-gradient(180deg,#050505,#0a0a0a);padding:14px;border-radius:10px;border:1px solid rgba(0,255,136,0.04);cursor:pointer}
-.faq-item h5{margin:0;color:var(--accent);font-weight:800}
-.faq-body{margin-top:8px;color:var(--muted);display:none}
-.contributors{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
-.contributor{min-width:160px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#070707,#0a0a0a);border:1px solid rgba(0,255,136,0.04);text-align:center}
-form.contact{max-width:880px;margin:28px auto 0;display:grid;gap:12px}
-.input,textarea{background:rgba(12,12,12,0.75);border-radius:12px;padding:12px 14px;border:1px solid rgba(0,255,136,0.06);color:var(--fg)}
-.input:focus,textarea:focus{outline:none;box-shadow:0 0 0 8px rgba(0,255,136,0.06);border-color:var(--accent)}
-textarea{min-height:160px;resize:vertical}
+  .controls{ display:flex; gap:10px; margin-top:6px; align-items:center; justify-content:flex-end; }
+  .btn{ padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(183,143,255,0.09); color:var(--muted); font-weight:800; cursor:pointer; }
+  .btn.primary{ background:linear-gradient(135deg,var(--accent-1),var(--accent-strong)); color:#001a0f; border:0; box-shadow: 0 10px 36px rgba(120,70,220,0.12) }
 
-/* footer */
-footer{padding:48px 20px;color:var(--muted);text-align:center;border-top:1px solid rgba(0,255,136,0.04);margin-top:48px}
+  /* particles layer */
+  .particles{
+    pointer-events:none; position:absolute; inset:0; z-index:8; mix-blend-mode: screen;
+  }
+  .particle{
+    position:absolute; border-radius:50%; width:6px;height:6px; background: linear-gradient(180deg,var(--accent-1),var(--accent-2)); opacity:.6;
+    box-shadow:0 0 18px rgba(120,70,220,0.15);
+    transform: translateY(0); will-change: transform, opacity;
+  }
 
-/* reveal helper */
-.reveal{opacity:0;transform:translateY(36px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
-.visible{opacity:1;transform:none}
+  /* footer small */
+  .shell-foot{ height:48px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.9rem; border-top:1px solid rgba(255,255,255,0.01); }
 
-/* scroll indicator */
-.scroll-indicator{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--accent);font-size:.85rem;font-weight:800;opacity:.9}
-@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(10px)}}
+  /* utility & responsive */
+  .hidden{ display:none }
+  @media (max-width:980px){
+    .shell{ height:92vh; width:94vw }
+    .left{ width:100% }
+    .right{ width:100% }
+    .boot-area{ padding:18px }
+    .glyph-wrap{ width:260px; height:260px }
+    .shell-top{ height:64px }
+    .mini{ width:44px;height:44px;padding:8px }
+  }
 
-/* responsive */
-@media (max-width:1100px){ .features-grid{grid-template-columns:repeat(2,1fr)} .demo-stage{grid-template-columns:1fr;row-gap:12px} .testimonials{grid-template-columns:1fr} }
-@media (max-width:720px){
-header.site{height:68px}
-.mini{width:44px;height:44px}
-.nav{padding:0 12px}
-.features-grid{grid-template-columns:1fr}
-.glyph-wrap{width:160px;height:160px}
-.boot-screen{height:380px}
-.boot-card{padding:18px;border-radius:16px}
-.hero-inner{padding:24px}
-.particles{display:none}
-.mobile-toggle{display:inline-flex}
-nav.links{display:none}
-}
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
 
-/* reduced motion respect */
-@media (prefers-reduced-motion:reduce){
-*{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
-.glyph-stroke{stroke-dashoffset:0!important;transition:none!important}
-} </style>
-
+</style>
 </head>
 <body>
-  <div class="bg-layer" aria-hidden="true"></div>
-  <div class="particles" aria-hidden="true"></div>
-
-  <header class="site" role="banner" aria-label="Main navigation">
-    <div class="wrap nav" role="navigation" aria-label="Primary">
-      <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-hidden="true">
-        <div class="mini" aria-hidden="true"><img src="Icon Dark.png" alt="Arcix logo" style="width:100%;height:100%;object-fit:contain"></div>
-        <div><div class="title">Arcix</div></div>
+  <div class="stage" role="application" aria-label="Arcix boot cinematic">
+    <div class="shell" role="region" aria-label="Arcix boot window">
+      <div class="shell-top" role="toolbar" aria-hidden="false">
+        <div class="brand" aria-label="Arcix brand">
+          <div class="mini" aria-hidden="true">
+            <!-- inline logo -->
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="ggrad" x1="0" x2="1">
+                  <stop offset="0" stop-color="#b78fff"/>
+                  <stop offset="1" stop-color="#66d6ff"/>
+                </linearGradient>
+              </defs>
+              <rect x="10" y="10" width="100" height="100" rx="18" fill="url(#ggrad)"/>
+              <circle cx="60" cy="46" r="18" fill="#ffffff" opacity="0.06"/>
+              <path d="M38 80c18-28 44-28 64-10" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.14"/>
+            </svg>
+          </div>
+          <div class="title">arcix</div>
+        </div>
+        <div class="meta" aria-hidden="true">development preview • v0.5</div>
       </div>
 
-```
-  <nav class="links" aria-label="Primary links">
-    <a href="#features">Features</a>
-    <a href="#vision">Vision</a>
-    <a href="#demo">Demo</a>
-    <a href="#join">Join</a>
-    <button class="cta-top" id="wakeBtn" aria-pressed="false">Wake Arcix</button>
-  </nav>
-</div>
-```
+      <div class="boot-area" role="main" aria-live="polite">
+        <div class="left" aria-hidden="false">
+          <div class="glyph-wrap" id="glyphWrap" aria-hidden="true">
+            <div class="glyph-card" role="img" aria-label="Arcix glyph">
+              <!-- main glyph svg (uses same gradient id) -->
+              <svg class="glyph-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="presentation" aria-hidden="true">
+                <defs>
+                  <linearGradient id="ggrad2" x1="0" x2="1">
+                    <stop offset="0" stop-color="#b78fff"/>
+                    <stop offset="1" stop-color="#66d6ff"/>
+                  </linearGradient>
+                </defs>
+                <g transform="translate(12,12) scale(0.85)">
+                  <circle cx="120" cy="120" r="88" stroke="rgba(255,255,255,0.02)" stroke-width="6" fill="none"/>
+                  <path class="glyph-stroke" d="M44 120c18-36 54-56 76-56s58 18 76 56" stroke-dasharray="420" stroke-dashoffset="420"/>
+                  <path class="glyph-stroke" d="M64 144c18 18 58 26 88 8" stroke-dasharray="300" stroke-dashoffset="300"/>
+                  <circle class="glyph-glow" cx="120" cy="120" r="6" fill="url(#ggrad2)"/>
+                </g>
+              </svg>
+            </div>
+          </div>
 
-  </header>
+          <div class="scan-wrap" aria-hidden="true" id="scanWrap">
+            <div class="scan-bar" id="scanBar" aria-hidden="true"></div>
+          </div>
 
-  <main>
-    <section class="hero" aria-label="Arcix boot cinematic">
-      <div class="hero-inner wrap">
-        <div style="display:grid;gap:6px;align-items:center;justify-items:center">
-          <div style="font-weight:700;color:var(--muted);font-size:.95rem;letter-spacing:1px">Arcix OS • In active development</div>
-          <div style="font-weight:900;font-size:1.25rem;color:transparent;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text">A new generation of operating systems.</div>
-        </div>
-
-```
-    <div class="boot-card" id="bootCard" role="region" aria-label="Arcix boot preview">
-      <div class="boot-top">
-        <div style="display:flex;gap:8px"><div class="small-dot"></div><div class="small-dot"></div><div class="small-dot"></div></div>
-        <div style="flex:1"></div>
-        <div class="boot-meta">development preview • v0.5</div>
-      </div>
-
-      <div class="boot-screen" id="bootScreen" aria-hidden="true">
-        <div class="vignette"></div>
-        <div class="film"></div>
-
-        <div class="glyph-wrap" id="glyphWrap" aria-hidden="true">
-          <svg class="glyph-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-            <defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#00ff88"/><stop offset="1" stop-color="#66ffb8"/></linearGradient></defs>
-            <g transform="translate(12,12) scale(0.85)">
-              <circle cx="120" cy="120" r="88" stroke="rgba(255,255,255,0.02)" stroke-width="6" fill="none"/>
-              <path class="glyph-stroke" d="M44 120c18-36 54-56 76-56s58 18 76 56" stroke-dasharray="420" stroke-dashoffset="420"/>
-              <path class="glyph-stroke" d="M64 144c18 18 58 26 88 8" stroke-dasharray="300" stroke-dashoffset="300"/>
-              <circle class="glyph-glow" cx="120" cy="120" r="6" fill="url(#lg)"/>
-            </g>
-          </svg>
-        </div>
-
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:6">
-          <div class="scan-wrap" id="scanWrap" aria-hidden="true"><div class="scan-bar" id="scanBar"></div></div>
           <div class="boot-log" id="bootLog" aria-hidden="true" role="status" aria-live="polite"></div>
         </div>
-      </div>
-    </div>
 
-    <div id="heroContent" style="opacity:0;transform:translateY(18px);transition:opacity .9s var(--ease),transform .9s var(--ease);width:100%;max-width:880px;margin-top:8px">
-      <h1 class="hero-title" id="mainTitle">A new generation of operating systems.</h1>
-      <p class="hero-sub">Privacy-first. Community-funded. Built by people who care — led by <strong>lilacviolets</strong> (founder, UI) and <strong>arimzyphr</strong> (co-founder, lead dev). Arcix is a passion project: 50% of funds go to charity, 50% to maintenance & infrastructure. No developer salaries — community-powered.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="https://github.com/Arcix-OS" target="_blank" rel="noopener">Contribute on GitHub</a>
-        <button class="btn btn-ghost" id="pilotBtn">Request a School Pilot</button>
-      </div>
-    </div>
-  </div>
+        <div class="right" aria-hidden="false">
+          <div class="status-card" aria-hidden="true">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:10px;height:10px;border-radius:50%;background:var(--accent-1);box-shadow:0 0 8px rgba(183,143,255,0.25)"></div>
+              <div style="font-weight:900;color:var(--accent-1)">Arcix Boot Console</div>
+              <div style="flex:1"></div>
+              <div style="opacity:.85;font-weight:800">privacy-first • community</div>
+            </div>
+          </div>
 
-  <div class="scroll-indicator" aria-hidden="true" style="bottom:18px;animation:bounce 2s ease-in-out infinite">
-    <span style="font-weight:800;letter-spacing:1px">Scroll</span>
-  </div>
-</section>
+          <div class="terminal" id="terminal" role="log" aria-live="polite">
+            <!-- terminal lines injected by JS -->
+          </div>
 
-<section id="features" class="content">
-  <div class="section-inner wrap">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
-      <div>
-        <div class="section-title">What makes Arcix special</div>
-        <div class="section-sub">Cinematic UX, privacy-first architecture, and an education-first roadmap. We're shipping iteratively with transparency and pilot feedback.</div>
-      </div>
-      <div style="width:320px">
-        <div style="background:linear-gradient(180deg,#070707,#0a0a0a);padding:12px;border-radius:12px;border:1px solid rgba(0,255,136,0.04)">
-          <div style="font-weight:800;color:var(--accent)">Arcix Mind (optional)</div>
-          <div style="color:var(--muted);margin-top:8px">On-device assistance. Cloud features are optional and require explicit consent.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="features-grid reveal" style="margin-top:20px">
-      <div class="feature"><h4>Unified Workspace</h4><p>Context-aware layouts, floating windows, persistent workspaces across devices.</p></div>
-      <div class="feature"><h4>Arcix Connect</h4><p>Wi-Fi-first encrypted messaging & call handoff (pilot phase).</p></div>
-      <div class="feature"><h4>Education Tools</h4><p>Teacher dashboards, offline lesson bundles, and pilot-focused deployments.</p></div>
-      <div class="feature"><h4>Compatibility</h4><p>Android apps, PWAs, and containerized desktop apps — expanding via community testing.</p></div>
-      <div class="feature"><h4>Community Funding</h4><p>50% charity • 50% maintenance. We publish funding reports and maintain audit trails.</p></div>
-      <div class="feature"><h4>Security</h4><p>Per-app permissions, verified boot, encrypted vaults, and minimal telemetry.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="demo" class="content">
-  <div class="section-inner wrap">
-    <div class="section-title">Experience the feel (simulated)</div>
-    <div class="section-sub">A short simulated preview of core flows. Real builds are available for pilot partners and contributors.</div>
-
-    <div class="demo-stage reveal">
-      <div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <div style="width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px var(--accent)"></div>
-          <div style="font-weight:800;color:var(--muted)">Simulated workspace</div>
-          <div style="flex:1"></div>
-          <div style="font-weight:700;color:var(--muted)">Preview</div>
-        </div>
-
-        <div class="desktop-window" id="desktopWindow" style="margin-top:12px">
-          <div id="workspaceCanvas" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-            <div style="font-weight:900;color:var(--accent)">Arcix Workspace (demo)</div>
-            <div style="color:var(--muted)">Development preview — UI & flows will refine through pilots.</div>
+          <div class="controls" aria-hidden="true">
+            <button class="btn" id="replayBtn" title="Replay boot">Replay</button>
+            <button class="btn primary" id="wakeBtn">Wake Arcix</button>
           </div>
         </div>
-
-        <div style="display:flex;gap:10px;margin-top:10px" class="demo-actions">
-          <button class="btn btn-primary" onclick="simulateAction('open')">Open Project</button>
-          <button class="btn btn-ghost" onclick="simulateAction('settings')">System Settings</button>
-          <button class="btn btn-ghost" onclick="simulateAction('mind')">Ask Arcix Mind</button>
-        </div>
+        
+        <!-- particles layer (inside shell so blend works) -->
+        <div class="particles" id="particles" aria-hidden="true"></div>
       </div>
 
-      <div class="demo-right">
-        <div style="background:linear-gradient(180deg,#070707,#0a0a0a);padding:12px;border-radius:10px;border:1px solid rgba(0,255,136,0.04)">
-          <div style="font-weight:800;color:var(--accent)">Arcix Mind — local by default</div>
-          <div style="color:var(--muted);margin-top:8px">Runs locally by default. Any cloud features require explicit opt-in and clear documentation.</div>
-        </div>
-
-        <div style="background:linear-gradient(180deg,#060606,#090909);padding:12px;border-radius:10px;border:1px solid rgba(0,255,136,0.04);display:flex;flex-direction:column;gap:8px">
-          <div style="font-weight:800;color:var(--accent)">Try commands</div>
-          <ol style="color:var(--muted);margin:0 0 0 18px">
-            <li>Open notes → Summarize</li>
-            <li>Export project → Package</li>
-            <li>Teacher mode → Push assignment</li>
-          </ol>
-        </div>
-      </div>
+      <div class="shell-foot">Arcix OS • Cinematic boot • 50% charity • 50% maintenance</div>
     </div>
   </div>
-</section>
-
-<section id="vision" class="content">
-  <div class="section-inner wrap">
-    <div class="section-title">Mission & Transparency</div>
-    <div class="section-sub">Built from passion. Designed to be exceptional. We publish verified pilot results and funding reports as we progress.</div>
-
-    <div class="testimonials reveal" style="margin-top:14px;display:grid;grid-template-columns:1fr;gap:12px">
-      <div style="background:linear-gradient(180deg,#060606,#0a0a0a);padding:16px;border-radius:12px;border:1px solid rgba(0,255,136,0.04)">
-        <div style="font-weight:900;color:var(--accent)">Development & Pilots — ongoing</div>
-        <div style="color:var(--muted);margin-top:8px">We run small pilots, collect feedback, iterate fast. Performance and user-study claims will be published after validation.</div>
-        <div style="margin-top:10px;color:var(--muted)"><strong>Financial policy:</strong> 50% of funds to charity; 50% to maintenance & infrastructure. No developer salaries — this is a community passion project.</div>
-      </div>
-
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <div style="flex:1;min-width:180px;background:linear-gradient(180deg,#070707,#090909);padding:14px;border-radius:10px;border:1px solid rgba(0,255,136,0.04);text-align:center">
-          <div style="font-weight:900;font-size:1.2rem;color:var(--accent)">Open & Honest</div>
-          <div style="color:var(--muted);margin-top:6px">Funding and maintenance reports will be published publicly.</div>
-        </div>
-        <div style="flex:1;min-width:180px;background:linear-gradient(180deg,#070707,#090909);padding:14px;border-radius:10px;border:1px solid rgba(0,255,136,0.04);text-align:center">
-          <div style="font-weight:900;font-size:1.2rem;color:var(--accent)">Community Driven</div>
-          <div style="color:var(--muted);margin-top:6px">Contribute code, test pilots, help design workflows.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="join" class="content">
-  <div class="section-inner wrap" style="text-align:center">
-    <div class="section-title">Join the journey</div>
-    <div class="section-sub">We aim to be the best OS in the world — built openly and with purpose. Join the waitlist for previews, pilot invites, and development updates.</div>
-
-    <div class="contributors reveal" style="margin-top:12px">
-      <div class="contributor"><h4 style="margin-top:8px">lilacviolets</h4><div style="color:var(--muted)">Founder • UI & Experience</div></div>
-      <div class="contributor"><h4 style="margin-top:8px">arimzyphr</h4><div style="color:var(--muted)">Co-Founder • Lead Dev</div></div>
-      <div class="contributor"><h4 style="margin-top:8px">Community</h4><div style="color:var(--muted)">Volunteers & contributors worldwide</div></div>
-    </div>
-
-    <div style="margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <div style="background:linear-gradient(135deg, rgba(0,255,136,0.12), rgba(0,255,136,0.06));padding:10px 16px;border-radius:999px;border:1px solid rgba(0,255,136,0.12);font-weight:800;color:var(--accent)">50% → Charity</div>
-      <div style="background:linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,255,136,0.04));padding:10px 16px;border-radius:999px;border:1px solid rgba(0,255,136,0.12);font-weight:800;color:var(--accent)">50% → Maintenance</div>
-    </div>
-
-    <form class="contact reveal" onsubmit="handleJoin(event)" style="margin-top:18px">
-      <input class="input" name="name" placeholder="Your name" required aria-label="Your name">
-      <input class="input" type="email" name="email" placeholder="Email address" required aria-label="Email address">
-      <textarea name="message" placeholder="How you'd like to help or pilot details" required aria-label="Message"></textarea>
-      <div style="display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap">
-        <button class="btn btn-primary" type="submit">Join Waitlist</button>
-        <a class="btn btn-ghost" href="https://github.com/Arcix-OS" target="_blank" rel="noopener">View Repo</a>
-      </div>
-    </form>
-  </div>
-</section>
-```
-
-  </main>
-
-  <footer role="contentinfo">
-    <div class="wrap" style="text-align:center">
-      <div style="font-weight:900;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent">Arcix OS</div>
-      <div style="color:var(--muted);font-size:13px;margin-top:8px">© 2025 Arcix Foundation — In active development. 50% charity • 50% maintenance. Passion project — community-first.</div>
-    </div>
-  </footer>
 
 <script>
-/* Single-file JS: polished animations, parallax, accessible sequences, performance-conscious */
+/* ========= OPTIONS ========= */
+const LOGS = [
+  "Initializing hardware abstraction layer…",
+  "Verified secure boot keys…",
+  "Mounting encrypted containers…",
+  "Loading privacy modules (local-first)…",
+  "Preparing Arcix Mind (local assistant)…",
+  "Starting background sync (opt-in)…",
+  "Restoring workspace layout…",
+  "Workspace ready."
+];
 
-/* Helpers */
-const rand = (a,b)=>Math.random()*(b-a)+a;
-const $ = sel => document.querySelector(sel);
+/* ========= DOM ========= */
+const terminal = document.getElementById('terminal');
+const glyphPaths = null; // not used directly (we animate by class)
+const scanBar = document.getElementById('scanBar');
+const scanWrap = document.getElementById('scanWrap');
+const bootLog = document.getElementById('bootLog');
+const glyphWrap = document.getElementById('glyphWrap');
+const wakeBtn = document.getElementById('wakeBtn');
+const replayBtn = document.getElementById('replayBtn');
+const particlesRoot = document.getElementById('particles');
 
-/* Particle generation with limited DOM */
-(function createParticles(){
-  const container = document.querySelector('.particles');
-  if(!container) return;
-  const count = Math.max(12, Math.min(60, Math.floor(window.innerWidth/14)));
-  const frag = document.createDocumentFragment();
-  for(let i=0;i<count;i++){
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const s = Math.round(rand(2,6));
-    p.style.width = p.style.height = s + 'px';
-    p.style.left = rand(0,100).toFixed(2) + '%';
-    p.style.top = rand(0,100).toFixed(2) + '%';
-    p.style.animationDelay = rand(-16,0).toFixed(2) + 's';
-    p.style.animationDuration = (10 + Math.random()*14).toFixed(2) + 's';
-    p.style.opacity = (Math.random()*0.75).toFixed(2);
-    frag.appendChild(p);
-  }
-  container.appendChild(frag);
-})();
+/* ========= helpers ========= */
+const rand = (a,b) => Math.random()*(b-a)+a;
+const createEl = (tag, cls, txt) => { const e = document.createElement(tag); if(cls) e.className = cls; if(txt) e.textContent = txt; return e; };
 
-/* header scroll */
-(function headerScroll(){
-  const header = document.querySelector('header.site');
-  let ticking = false;
-  window.addEventListener('scroll', ()=>{
-    if(!ticking){ window.requestAnimationFrame(()=>{
-      header.classList.toggle('scrolled', window.scrollY > 80);
-      ticking = false;
-    }); }
-    ticking = true;
-  }, {passive:true});
-})();
+/* ========= terminal simulation ========= */
+let booting = false;
+function clearTerminal(){
+  terminal.innerHTML = '';
+  bootLog.textContent = '';
+  scanBar.style.transform = 'translateX(-160%)';
+  scanWrap.style.opacity = '0';
+  glyphWrap.style.transform = 'scale(.98)';
+}
 
-/* smooth reveal on scroll with IntersectionObserver */
-(function revealObserver(){
-  const els = document.querySelectorAll('.reveal');
-  if(!els.length) return;
-  const io = new IntersectionObserver((entries, obs) => {
-    entries.forEach(e => {
-      if(e.isIntersecting){
-        e.target.classList.add('visible');
-        obs.unobserve(e.target);
-      }
-    });
-  }, {threshold: 0.12});
-  els.forEach(el => io.observe(el));
-})();
+function pushTerminalLine(text, delay = 0){
+  const line = createEl('div','term-line', text);
+  terminal.appendChild(line);
+  // give slight delay to reveal animation
+  setTimeout(()=> line.classList.add('visible'), 40 + delay);
+  // keep terminal scrolled
+  setTimeout(()=> terminal.scrollTop = terminal.scrollHeight, 80 + delay);
+}
 
-/* Glyph stroke animation + parallax pointer */
+/* glyph stroke animation */
 function animateGlyphStrokes(){
+  // select stroke paths
   const paths = document.querySelectorAll('.glyph-stroke');
-  paths.forEach((p, i) => {
+  paths.forEach((p,i) => {
     try{
       const len = p.getTotalLength();
       p.style.strokeDasharray = len;
       p.style.strokeDashoffset = len;
-      p.getBoundingClientRect(); // force reflow
-      setTimeout(()=> p.style.transition = `stroke-dashoffset 1.1s cubic-bezier(.2,.9,.2,1) ${i*0.18}s`, 20);
+      // force reflow
+      p.getBoundingClientRect();
+      setTimeout(()=> p.style.transition = `stroke-dashoffset 1.05s cubic-bezier(.2,.9,.2,1) ${i*0.16}s`, 20);
       requestAnimationFrame(()=> p.style.strokeDashoffset = '0');
     }catch(e){}
   });
 }
 
-/* Boot sequence: staged, accessible, and cancellable */
-(function bootSequence(){
-  const glyphWrap = $('#glyphWrap');
-  const scanWrap = $('#scanWrap');
-  const scanBar = $('#scanBar');
-  const bootLog = $('#bootLog');
-  const heroContent = $('#heroContent');
-  const wakeBtn = $('#wakeBtn');
-  const pilotBtn = $('#pilotBtn');
+/* main boot sequence */
+function startBoot(){
+  if(booting) return;
+  booting = true;
+  wakeBtn.disabled = true;
+  replayBtn.disabled = true;
+  clearTerminal();
 
-  let booted = false;
-  const logs = [
-    "Checking hardware subsystems…",
-    "Mounting secure containers…",
-    "Loading privacy modules…",
-    "Preparing local assistant (Arcix Mind)…",
-    "Starting background sync (opt-in)…",
-    "Workspace ready."
-  ];
+  // glyph reveal
+  glyphWrap.style.opacity = '1';
+  glyphWrap.style.transform = 'scale(1) translateZ(0)';
 
-  function setLog(text){
-    if(!bootLog) return;
-    bootLog.textContent = text;
+  animateGlyphStrokes();
+
+  // Type terminal lines with stagger
+  let t = 600;
+  scanWrap.style.opacity = '1';
+  scanBar.style.transform = 'translateX(420%)';
+  pushTerminalLine("Arcix kernel initializing…", 0);
+
+  LOGS.forEach((l, idx) => {
+    setTimeout(()=> {
+      pushTerminalLine("> " + l);
+      // update bootLog for accessible status
+      bootLog.style.opacity = '1';
+      bootLog.textContent = l;
+    }, t + idx * 700);
+  });
+
+  // second stage: animate scan bar
+  setTimeout(()=> {
+    scanBar.style.transition = 'transform 1.6s linear';
+    scanBar.style.transform = 'translateX(-20%)';
+  }, t + 700);
+
+  // finish sequence and enter looped visual state
+  const finishAt = t + LOGS.length * 700 + 1200;
+  setTimeout(()=> {
+    // final state
+    bootLog.textContent = "Workspace ready.";
+    // shrink glyph slightly for pleasing composition
+    glyphWrap.style.transform = 'scale(.64) translateY(-22px)';
+    // fade scan
+    scanWrap.style.opacity = '0';
+    // terminal keep last lines visible
+    pushTerminalLine("> Arcix online — enjoy the cinematic experience");
+    // enable controls
+    wakeBtn.disabled = false;
+    replayBtn.disabled = false;
+    booting = false;
+  }, finishAt);
+}
+
+/* replay */
+replayBtn.addEventListener('click', () => {
+  startBoot();
+});
+
+/* wake button */
+wakeBtn.addEventListener('click', () => {
+  startBoot();
+});
+
+/* keyboard replay (space) */
+window.addEventListener('keydown', (e) => {
+  if(e.code === 'Space'){ e.preventDefault(); startBoot(); }
+});
+
+/* auto-run on load */
+window.addEventListener('load', () => {
+  // small delay for cinematic
+  setTimeout(startBoot, 420);
+  // init particles
+  spawnParticles();
+});
+
+/* ========== Particles (flowing) ========== */
+let particleIds = [];
+function spawnParticles(){
+  const count = Math.max(20, Math.min(80, Math.floor(window.innerWidth / 12)));
+  const frag = document.createDocumentFragment();
+  for(let i=0;i<count;i++){
+    const p = createEl('div','particle');
+    const size = Math.round(rand(2,9));
+    p.style.width = p.style.height = size + 'px';
+    p.style.left = (rand(-5,105)).toFixed(2) + '%';
+    p.style.top  = (rand(0,100)).toFixed(2) + '%';
+    p.style.opacity = (rand(0.06,0.7)).toFixed(2);
+    p.style.transform = `translateY(${rand(0,80)}vh) scale(${rand(0.4,1.1)})`;
+    frag.appendChild(p);
+    animateParticle(p, i);
   }
+  particlesRoot.appendChild(frag);
+}
 
-  function startBoot(){
-    if(booted) return;
-    booted = true;
-    wakeBtn.setAttribute('aria-pressed','true');
+function animateParticle(el, idx){
+  // each particle will float along a bezier (simulated via translate)
+  const dur = rand(8000,18000);
+  const delay = rand(0,6000);
+  el.animate([
+    { transform: `translateY(${rand(20,120)}vh) translateX(0)`, opacity: el.style.opacity },
+    { transform: `translateY(-40vh) translateX(${rand(-12,12)}vw)`, opacity: 0.05 }
+  ], {
+    duration: dur,
+    delay: delay,
+    iterations: Infinity,
+    easing: 'linear'
+  });
+}
 
-    // glyph enter
-    glyphWrap.style.opacity = 1;
-    glyphWrap.style.transform = 'scale(1) translateZ(0)';
-    animateGlyphStrokes();
-
-    // staggered log + scan animation
-    let t = 0;
-    const showScan = ()=> { scanWrap.style.opacity = 1; scanBar.style.transform = 'translateX(420%)'; };
-    const reverseScan = ()=> { scanBar.style.transition = 'transform 1.4s linear'; scanBar.style.transform = 'translateX(-20%)'; };
-
-    // schedule events
-    setTimeout(()=>{ showScan(); setLog(logs[0]); }, 700);
-    setTimeout(()=> setLog(logs[1]), 1400);
-    setTimeout(()=> setLog(logs[2]), 2100);
-    setTimeout(()=> setLog(logs[3]), 2800);
-    setTimeout(()=> reverseScan(), 3400);
-    setTimeout(()=> setLog(logs[4]), 3800);
-    setTimeout(()=> { setLog(logs[5]); heroContent.style.opacity = 1; heroContent.style.transform = 'none'; glyphWrap.style.transform = 'scale(.56) translateY(-24px)'; glyphWrap.style.opacity = .98; }, 4300);
-    setTimeout(()=> { scanWrap.style.opacity = 0; bootLog.style.opacity = 0; }, 5600);
-
-    // subtle floating of glyph using RAF
-    startGlyphFloat();
-  }
-
-  wakeBtn.addEventListener('click', startBoot);
-  pilotBtn.addEventListener('click', ()=> document.getElementById('join').scrollIntoView({behavior:'smooth'}));
-
-  // auto-run after load for cinematic effect
-  window.addEventListener('load', ()=> setTimeout(startBoot, 550));
-
-  /* glyph float */
-  let glyphFloatId;
-  function startGlyphFloat(){
-    const el = glyphWrap;
-    if(!el) return;
-    let a = 0;
-    function tick(){
-      a += 0.012;
-      const y = Math.sin(a)*6;
-      const rx = Math.sin(a*0.7)*2;
-      const ry = Math.cos(a*0.5)*2;
-      el.style.transform = `translateY(${ -24 + y }px) scale(.58) rotateX(${rx}deg) rotateY(${ry}deg)`;
-      glyphFloatId = requestAnimationFrame(tick);
-    }
-    if(!glyphFloatId) glyphFloatId = requestAnimationFrame(tick);
-  }
-})();
-
-/* pointer parallax on glyph for depth */
-(function glyphParallax(){
-  const wrap = document.getElementById('glyphWrap');
-  if(!wrap) return;
-  const rect = ()=> wrap.getBoundingClientRect();
-  let lastX = 0, lastY = 0;
-  window.addEventListener('pointermove', (e)=>{
-    const r = rect();
-    const cx = r.left + r.width/2;
-    const cy = r.top + r.height/2;
-    const dx = (e.clientX - cx) / (r.width/2);
-    const dy = (e.clientY - cy) / (r.height/2);
-    const tiltX = Math.max(-8, Math.min(8, -dy*6));
-    const tiltY = Math.max(-8, Math.min(8, dx*6));
-    // lerp
-    lastX += (tiltY - lastX) * 0.12;
-    lastY += (tiltX - lastY) * 0.12;
-    wrap.style.transform = `scale(.56) translateY(-24px) rotateX(${lastY}deg) rotateY(${lastX}deg)`;
-  }, {passive:true});
-})();
-
-/* Reveal observer (second pass for elements that load late) */
-(function revealSecondPass(){
-  const els = document.querySelectorAll('.reveal');
-  if(!els.length) return;
-  const io = new IntersectionObserver((entries, obs) => {
-    entries.forEach(e => {
-      if(e.isIntersecting){
-        e.target.classList.add('visible');
-        obs.unobserve(e.target);
-      }
-    });
-  }, {threshold: 0.12});
-  els.forEach(el => io.observe(el));
-})();
-
-/* Demo actions (simulated) */
-window.simulateAction = function(action){
-  const cw = document.getElementById('workspaceCanvas');
-  if(!cw) return;
-  const original = cw.innerHTML;
-  if(action==='open'){
-    cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">Opening Project…</div><div style="color:var(--muted)">Unpacking assets • restoring layout</div>';
-  } else if(action==='settings'){
-    cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">System Settings</div><div style="color:var(--muted)">Display • Privacy • Arcix Mind</div>';
-  } else {
-    cw.innerHTML = '<div style="font-weight:900;color:var(--accent)">Arcix Mind</div><div style="color:var(--muted)">Summarizing notes locally…</div>';
-  }
-  setTimeout(()=> cw.innerHTML = original, 900);
-};
-
-/* FAQ toggle */
-window.toggleFAQ = function(el){
-  const body = el.querySelector('.faq-body');
-  if(!body) return;
-  if(body.style.display === 'block'){ body.style.display = 'none'; }
-  else { body.style.display = 'block'; }
-};
-
-/* Contact handler (simulated) */
-window.handleJoin = function(e){
-  e.preventDefault();
-  const f = e.target;
-  const name = f.name?.value || 'friend';
-  const email = f.email?.value || '';
-  const btn = f.querySelector('button[type="submit"]');
-  const originalText = btn ? btn.textContent : 'Sending…';
-  if(btn){ btn.disabled = true; btn.textContent = 'Sending…'; }
-  setTimeout(()=>{
-    if(btn){ btn.disabled = false; btn.textContent = '✓ Submitted'; }
-    // friendly confirmation
-    window.alert(`Thanks ${name}! We received your request. We'll reach you at ${email} with previews & pilot invites.`);
-    if(btn){ btn.textContent = originalText; }
-    f.reset();
-  }, 900);
-};
-
-/* Accessibility: respect reduced motion */
-(function reducedMotion(){
+/* ========== reduced motion handling ========== */
+(function reduceMotion(){
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
   if(mq.matches){
-    document.querySelectorAll('.particle').forEach(p=>p.style.animation='none');
-    document.querySelectorAll('.glyph-stroke').forEach(p=>{ p.style.strokeDashoffset = 0; p.style.transition='none' });
-    document.querySelectorAll('.bg-layer').forEach(b=>b.style.animation='none');
+    // stop CSS transitions by setting small durations (some already handled by CSS media)
+    document.querySelectorAll('.particle').forEach(p => p.style.animation = 'none');
   }
 })();
-</script>
 
+/* keep layout responsive: reset particles on resize */
+let _resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(()=> {
+    // clear existing particles and respawn
+    particlesRoot.innerHTML = '';
+    spawnParticles();
+  }, 200);
+});
+
+/* ensure terminal scroll area stays near bottom as lines added */
+const observer = new MutationObserver(() => { terminal.scrollTop = terminal.scrollHeight; });
+observer.observe(terminal, { childList: true });
+
+</script>
 </body>
 </html>
