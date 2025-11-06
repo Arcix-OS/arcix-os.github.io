@@ -1,280 +1,854 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="description" content="Arcix OS: Redefining Android customization with next-gen design, flexibility, and power. Join the open-source movement."/>
-<title>Arcix OS — Redefining Customization</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Arcix OS — Made for everyone</title>
+<meta name="description" content="Arcix OS — an open-source, community-funded OS built for learning, creativity, and productivity." />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg0: #040206; --bg1: #07060b;
-    --accent1: #b78fff; --accent2: #66d6ff; --muted: #cfd6ff;
-    --ease: cubic-bezier(.2,.9,.2,1);
+    --bg:#000;
+    --fg:#e8fff0;
+    --muted:#9fbfb0;
+    --accent:#00ff88;
+    --accent-strong:#00cc66;
+    --ease:cubic-bezier(.2,.9,.2,1);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body {
-    height: 100%; font-family: Inter, system-ui, sans-serif;
-    background: var(--bg0); color: #e9eefc; overflow-x: hidden;
-  }
-  a { color: var(--accent2); text-decoration: none; }
-  section { padding: 100px 10vw; max-width: 1100px; margin: auto; }
-  h1, h2, h3 { font-weight: 800; }
 
-  /* ----- BOOT SCREEN (original exact look + behavior) ----- */
-  #boot {
-    position: fixed; inset: 0;
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:Inter,system-ui,-apple-system,sans-serif;
+    background:#000;
+    color:var(--fg);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+
+  a{color:var(--accent);text-decoration:none;transition:all .3s var(--ease)}
+  a:hover{color:var(--accent-strong)}
+
+  /* Animated background */
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
     background:
-      radial-gradient(1200px 600px at 10% 10%, rgba(120,80,200,.06), transparent 6%),
-      radial-gradient(800px 400px at 90% 90%, rgba(60,200,255,.03), transparent 8%),
-      linear-gradient(180deg, var(--bg0), var(--bg1));
-    display: flex; align-items: center; justify-content: center; flex-direction: column;
-    z-index: 1000; transition: opacity 1.2s var(--ease), visibility 1.2s var(--ease);
-    cursor: pointer; /* clicking will skip */
+      radial-gradient(circle at 20% 30%, rgba(0,255,136,0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(0,255,136,0.08) 0%, transparent 50%);
+    animation:drift 20s ease-in-out infinite;
+    pointer-events:none;
+    z-index:0;
   }
-  #boot.hide {
-    opacity: 0; visibility: hidden;
-  }
-  .logo {
-    width: 160px; height: 160px; border-radius: 24px; border: 1px solid rgba(183,143,255,.1);
-    display: grid; place-items: center; background: rgba(255,255,255,.02);
-    box-shadow: 0 0 80px rgba(183,143,255,.1);
-  }
-  .logo svg {
-    width: 60%; height: 60%;
-  }
-  .scan {
-    width: 200px; height: 10px; border-radius: 999px; overflow: hidden;
-    background: rgba(255,255,255,.05); margin-top: 24px;
-  }
-  .scan div {
-    height: 100%; width: 20%;
-    background: linear-gradient(90deg, var(--accent1), var(--accent2));
-    transform: translateX(-100%);
-  }
-  .boot-text {
-    margin-top: 20px; font-weight: 700; color: var(--muted);
-    text-align: center; opacity: .8;
-  }
-  #particles {
-    position: absolute; inset: 0; overflow: hidden; z-index: -1; mix-blend-mode: screen;
-  }
-  .p {
-    position: absolute; border-radius: 50%;
-    background: linear-gradient(180deg, var(--accent1), var(--accent2));
-    opacity: .6; width: 6px; height: 6px;
+  @keyframes drift{
+    0%,100%{transform:translate(0,0) rotate(0deg)}
+    50%{transform:translate(3%,-3%) rotate(180deg)}
   }
 
-  /* ----- SITE CONTENT (original UI) ----- */
-  header {
-    position: sticky;
-    top: 0; z-index: 100;
-    padding: 20px 10vw; display: flex; align-items: center; justify-content: space-between;
-    backdrop-filter: blur(10px);
-    background: rgba(4, 2, 6, 0.85);
+  /* Particles */
+  .particles{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    overflow:hidden;
   }
-  nav a {
-    margin: 0 12px; font-weight: 600;
+  .particle{
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:var(--accent);
+    border-radius:50%;
+    opacity:0;
+    animation:rise 12s linear infinite;
+    box-shadow:0 0 8px var(--accent);
   }
-  .hero {
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 40px;
-  }
-  .hero img {
-    width: 360px; max-width: 100%; border-radius: 16px;
-    box-shadow: 0 20px 80px rgba(120,70,220,.15);
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-  }
-  .cta {
-    padding: 14px 28px; border: 0; border-radius: 12px; font-weight: 800;
-    background: linear-gradient(90deg, var(--accent1), var(--accent2));
-    color: #fff; cursor: pointer;
-    user-select: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .cta:hover,
-  .cta:focus {
-    box-shadow: 0 0 15px var(--accent2);
-    transform: scale(1.05);
-  }
-  .feature-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 30px; margin-top: 40px;
-  }
-  .feature-card {
-    padding: 24px;
-    border-radius: 16px;
-    background: rgba(255,255,255,.02);
-    border: 1px solid rgba(255,255,255,.05);
-    transition: background 0.3s ease, border-color 0.3s ease;
-  }
-  .feature-card:hover,
-  .feature-card:focus-within {
-    background: rgba(183,143,255, 0.06);
-    border-color: var(--accent1);
-  }
-  footer {
-    text-align: center; padding: 60px 20px; color: var(--muted); font-size: .9rem;
-  }
-  main {
-    opacity: 0; transition: opacity 1.2s var(--ease);
-  }
-  main.show {
-    opacity: 1;
+  @keyframes rise{
+    0%{transform:translateY(100vh);opacity:0}
+    10%{opacity:.6}
+    90%{opacity:.3}
+    100%{transform:translateY(-100vh);opacity:0}
   }
 
-  @media (max-width: 760px) {
-    section { padding: 60px 6vw; }
-    header { padding: 14px 6vw; }
-    .hero { gap: 20px; }
+  /* Header */
+  header{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:100;
+    backdrop-filter:blur(20px);
+    background:rgba(0,0,0,.7);
+    border-bottom:1px solid rgba(0,255,136,.1);
+    transition:all .3s;
+  }
+  header.scrolled{
+    background:rgba(0,0,0,.95);
+    box-shadow:0 10px 40px rgba(0,255,136,.1);
+  }
+  
+  .nav{
+    max-width:1200px;
+    margin:0 auto;
+    padding:16px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+  }
+  
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    cursor:pointer;
+    transition:transform .3s;
+  }
+  .brand:hover{transform:scale(1.05)}
+  
+  .brand .mini{
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#0a0a0a,#000);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid rgba(0,255,136,.3);
+    box-shadow:0 8px 24px rgba(0,255,136,.2);
+    position:relative;
+    overflow:hidden;
+  }
+  .brand .mini::before{
+    content:'';
+    position:absolute;
+    inset:-100%;
+    background:linear-gradient(45deg,transparent,rgba(0,255,136,.1),transparent);
+    animation:shine 3s linear infinite;
+  }
+  @keyframes shine{
+    to{transform:translate(100%,100%)}
+  }
+  
+  .brand img{width:36px;height:36px;position:relative;z-index:2}
+  .brand .title{
+    font-weight:900;
+    font-size:1.1rem;
+    background:linear-gradient(135deg,var(--accent),#66ffb8);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  nav.links{display:flex;gap:8px;align-items:center}
+  nav.links a{
+    color:var(--fg);
+    font-weight:600;
+    padding:10px 16px;
+    border-radius:10px;
+    transition:all .2s;
+    position:relative;
+  }
+  nav.links a::after{
+    content:'';
+    position:absolute;
+    bottom:0;
+    left:50%;
+    width:0;
+    height:2px;
+    background:var(--accent);
+    transform:translateX(-50%);
+    transition:width .3s;
+  }
+  nav.links a:hover{
+    color:var(--accent);
+    background:rgba(0,255,136,.05);
+  }
+  nav.links a:hover::after{width:60%}
+
+  .cta-top{
+    padding:10px 20px;
+    border-radius:999px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-strong));
+    color:#001a0f;
+    font-weight:800;
+    border:none;
+    cursor:pointer;
+    transition:all .3s;
+    box-shadow:0 4px 20px rgba(0,255,136,.4);
+  }
+  .cta-top:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 30px rgba(0,255,136,.5);
+  }
+
+  /* Hero */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:120px 20px 80px;
+    z-index:2;
+  }
+
+  .hero-inner{
+    max-width:1000px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:24px;
+  }
+
+  .logo-wrap{
+    width:180px;
+    height:180px;
+    border-radius:30px;
+    padding:20px;
+    background:linear-gradient(135deg,#0a0a0a,#000);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    animation:float 6s ease-in-out infinite;
+    border:2px solid rgba(0,255,136,.3);
+    box-shadow:0 20px 60px rgba(0,255,136,.3);
+  }
+  .logo-wrap::before{
+    content:'';
+    position:absolute;
+    inset:-2px;
+    border-radius:30px;
+    background:linear-gradient(135deg,var(--accent),transparent,var(--accent-strong));
+    opacity:.6;
+    animation:rotate 4s linear infinite;
+    z-index:-1;
+  }
+  @keyframes rotate{
+    to{transform:rotate(360deg)}
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-20px)}
+  }
+
+  .logo-wrap img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    filter:drop-shadow(0 10px 20px rgba(0,255,136,.5));
+  }
+
+  h1.title{
+    margin:20px 0 0;
+    font-size:clamp(2.5rem,8vw,5rem);
+    line-height:1;
+    letter-spacing:-2px;
+    font-weight:900;
+    background:linear-gradient(135deg,var(--accent) 0%,#66ffb8 50%,var(--accent) 100%);
+    background-size:200% auto;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:shimmer 3s linear infinite;
+  }
+  @keyframes shimmer{
+    to{background-position:200% center}
+  }
+
+  .subtitle{
+    color:var(--accent);
+    font-weight:700;
+    font-size:1.2rem;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    position:relative;
+  }
+  .subtitle::before,
+  .subtitle::after{
+    content:'';
+    position:absolute;
+    top:50%;
+    width:40px;
+    height:2px;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  }
+  .subtitle::before{right:calc(100% + 15px)}
+  .subtitle::after{left:calc(100% + 15px)}
+
+  .lead{
+    max-width:850px;
+    color:var(--muted);
+    font-size:1.15rem;
+    line-height:1.8;
+  }
+
+  .made-for{
+    margin-top:20px;
+    font-size:1.4rem;
+    display:inline-flex;
+    gap:8px;
+    align-items:baseline;
+  }
+  .made-for .label{
+    color:var(--fg);
+    font-weight:600;
+    opacity:.7;
+  }
+  .typed{
+    position:relative;
+    display:inline-block;
+    font-weight:900;
+    color:var(--accent);
+    min-width:160px;
+  }
+  .typed span{
+    position:absolute;
+    left:0;
+    top:0;
+    opacity:0;
+    white-space:nowrap;
+    animation:morphCycle 12s cubic-bezier(.4,0,.2,1) infinite;
+  }
+  .typed span:nth-child(1){animation-delay:0s}
+  .typed span:nth-child(2){animation-delay:2s}
+  .typed span:nth-child(3){animation-delay:4s}
+  .typed span:nth-child(4){animation-delay:6s}
+  .typed span:nth-child(5){animation-delay:8s}
+  .typed span:nth-child(6){animation-delay:10s}
+
+  @keyframes morphCycle{
+    0%{opacity:0;transform:translateY(8px)}
+    4%{opacity:1;transform:translateY(0)}
+    16%{opacity:1;transform:translateY(0)}
+    20%{opacity:0;transform:translateY(-8px)}
+    100%{opacity:0}
+  }
+
+  .cta-row{
+    margin-top:40px;
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .btn{
+    border-radius:999px;
+    padding:16px 36px;
+    font-weight:800;
+    font-size:1.05rem;
+    border:none;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    transition:all .3s;
+    position:relative;
+    overflow:hidden;
+  }
+  
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent-strong));
+    color:#001a0f;
+    box-shadow:0 10px 40px rgba(0,255,136,.4);
+  }
+  .btn-primary:hover{
+    transform:translateY(-4px) scale(1.05);
+    box-shadow:0 20px 60px rgba(0,255,136,.5);
+  }
+  
+  .btn-ghost{
+    background:rgba(0,255,136,.05);
+    border:2px solid rgba(0,255,136,.3);
+    color:var(--accent);
+    backdrop-filter:blur(10px);
+  }
+  .btn-ghost:hover{
+    background:rgba(0,255,136,.1);
+    border-color:var(--accent);
+    transform:translateY(-4px);
+    box-shadow:0 10px 30px rgba(0,255,136,.2);
+  }
+
+  .panels{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:24px;
+    margin-top:60px;
+  }
+  .panel{
+    background:linear-gradient(135deg,rgba(0,255,136,.03),rgba(0,255,136,.01));
+    padding:28px;
+    border-radius:20px;
+    border:1px solid rgba(0,255,136,.15);
+    backdrop-filter:blur(10px);
+    transition:all .4s;
+    position:relative;
+    overflow:hidden;
+  }
+  .panel::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(90deg,transparent,rgba(0,255,136,.1),transparent);
+    transition:left .6s;
+  }
+  .panel:hover::before{left:100%}
+  .panel:hover{
+    transform:translateY(-8px);
+    border-color:var(--accent);
+    box-shadow:0 20px 60px rgba(0,255,136,.2);
+  }
+  .panel h4{
+    color:var(--accent);
+    margin:0 0 12px;
+    font-size:1.2rem;
+    font-weight:800;
+  }
+  .panel p{
+    color:var(--muted);
+    font-size:.95rem;
+    line-height:1.6;
+  }
+
+  section.content{
+    padding:120px 20px;
+    position:relative;
+    z-index:2;
+  }
+  .section-inner{
+    max-width:1200px;
+    margin:0 auto;
+  }
+  .section-title{
+    font-size:2.5rem;
+    font-weight:900;
+    background:linear-gradient(135deg,var(--accent),#66ffb8);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin-bottom:12px;
+    letter-spacing:-1px;
+  }
+  .section-sub{
+    color:var(--muted);
+    margin-bottom:48px;
+    font-size:1.1rem;
+  }
+
+  .grid{display:grid;gap:24px}
+  @media(min-width:920px){
+    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+  }
+  
+  .card{
+    background:linear-gradient(135deg,rgba(7,7,7,.8),rgba(10,10,10,.6));
+    border-radius:20px;
+    padding:32px;
+    border:1px solid rgba(0,255,136,.1);
+    backdrop-filter:blur(10px);
+    transition:all .4s;
+  }
+  .card:hover{
+    transform:translateY(-8px);
+    border-color:var(--accent);
+    box-shadow:0 20px 60px rgba(0,255,136,.15);
+  }
+  .card h3{
+    margin:0 0 16px;
+    color:var(--accent);
+    font-size:1.4rem;
+    font-weight:800;
+  }
+  .card p{
+    color:var(--muted);
+    line-height:1.7;
+  }
+
+  .roadmap{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;
+    margin-top:48px;
+    position:relative;
+  }
+  .roadmap::before{
+    content:'';
+    position:absolute;
+    top:30px;
+    left:0;
+    right:0;
+    height:2px;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  }
+  .mile{
+    background:linear-gradient(135deg,#0a0a0a,#070707);
+    padding:24px;
+    border-radius:16px;
+    border:2px solid rgba(0,255,136,.2);
+    position:relative;
+    z-index:1;
+    transition:all .4s;
+  }
+  .mile::before{
+    content:'';
+    position:absolute;
+    top:-12px;
+    left:50%;
+    transform:translateX(-50%);
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:var(--accent);
+    border:3px solid #000;
+    box-shadow:0 0 20px var(--accent);
+  }
+  .mile:hover{
+    transform:translateY(-8px);
+    border-color:var(--accent);
+    box-shadow:0 20px 40px rgba(0,255,136,.2);
+  }
+  .mile h4{
+    margin:0 0 12px;
+    color:var(--accent);
+    font-weight:800;
+    font-size:1.2rem;
+  }
+  .mile p{
+    color:var(--muted);
+    line-height:1.6;
+  }
+
+  .contributors{
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top:48px;
+  }
+  .contributor{
+    background:linear-gradient(135deg,rgba(0,255,136,.05),rgba(0,255,136,.02));
+    padding:24px 32px;
+    border-radius:20px;
+    border:2px solid rgba(0,255,136,.2);
+    min-width:240px;
+    text-align:center;
+    transition:all .4s;
+  }
+  .contributor:hover{
+    transform:translateY(-8px) scale(1.05);
+    border-color:var(--accent);
+    box-shadow:0 20px 50px rgba(0,255,136,.25);
+  }
+  .contributor h4{
+    margin:12px 0 4px;
+    color:var(--accent);
+    font-size:1.3rem;
+    font-weight:800;
+  }
+  .contributor div{
+    color:var(--muted);
+    font-size:.9rem;
+  }
+
+  .donate{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    margin-top:32px;
+    flex-wrap:wrap;
+  }
+  .pill{
+    background:linear-gradient(135deg,rgba(0,255,136,.1),rgba(0,255,136,.05));
+    padding:12px 24px;
+    border-radius:999px;
+    border:1px solid rgba(0,255,136,.3);
+    color:var(--accent);
+    font-weight:700;
+    transition:all .3s;
+  }
+  .pill:hover{
+    transform:scale(1.05);
+    box-shadow:0 8px 24px rgba(0,255,136,.2);
+  }
+
+  form.contact{
+    max-width:700px;
+    margin:48px auto 0;
+    display:grid;
+    gap:16px;
+  }
+  input,textarea{
+    background:rgba(11,11,11,.8);
+    border-radius:12px;
+    padding:16px 20px;
+    border:2px solid rgba(0,255,136,.1);
+    color:var(--fg);
+    font-size:1rem;
+    transition:all .3s;
+  }
+  input:focus,textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(0,255,136,.1);
+    background:rgba(11,11,11,.95);
+  }
+  textarea{
+    min-height:140px;
+    resize:vertical;
+    font-family:inherit;
+  }
+
+  footer{
+    padding:60px 20px;
+    text-align:center;
+    color:var(--muted);
+    border-top:1px solid rgba(0,255,136,.1);
+    margin-top:80px;
+    position:relative;
+    z-index:2;
+  }
+  footer>div{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    align-items:center;
+  }
+  footer .wrap>div:first-child{
+    font-weight:800;
+    font-size:1.2rem;
+    background:linear-gradient(135deg,var(--accent),#66ffb8);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  .scroll-indicator{
+    position:absolute;
+    bottom:40px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    color:var(--accent);
+    font-size:.8rem;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    opacity:.6;
+    animation:bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce{
+    0%,100%{transform:translateX(-50%) translateY(0)}
+    50%{transform:translateX(-50%) translateY(10px)}
+  }
+  .scroll-indicator::after{
+    content:'';
+    width:2px;
+    height:30px;
+    background:linear-gradient(180deg,var(--accent),transparent);
+    border-radius:2px;
+  }
+
+  @media(max-width:760px){
+    .hero{padding:100px 18px 60px}
+    h1.title{font-size:2.5rem}
+    nav.links{display:none}
+    .logo-wrap{width:140px;height:140px}
+    .section-title{font-size:1.8rem}
+    .roadmap::before{display:none}
+    .mile::before{top:50%;left:-12px;transform:translateY(-50%)}
   }
 </style>
 </head>
 <body>
+  <div class="particles"></div>
 
-<!-- BOOT SCREEN -->
-<div id="boot" role="dialog" aria-label="Arcix boot sequence" aria-live="polite">
-  <div id="particles"></div>
-  <div class="logo" aria-hidden="true">
-    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-      <defs>
-        <linearGradient id="g" x1="0" x2="1">
-          <stop offset="0" stop-color="#b78fff"/>
-          <stop offset="1" stop-color="#66d6ff"/>
-        </linearGradient>
-      </defs>
-      <rect x="10" y="10" width="100" height="100" rx="18" fill="url(#g)"/>
-      <circle cx="60" cy="46" r="18" fill="#fff" opacity=".06"/>
-      <path d="M38 80c18-28 44-28 64-10" stroke="#fff" stroke-width="3" fill="none" opacity=".14" stroke-linecap="round"/>
-    </svg>
-  </div>
-  <div class="scan" aria-hidden="true"><div id="scanbar"></div></div>
-  <div class="boot-text" id="bootText" aria-live="assertive" role="status">Booting Arcix...</div>
-</div>
+  <header>
+    <div class="nav">
+      <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <div class="mini"><img src="Icon Dark.png" alt="Arcix logo"></div>
+        <div class="title">Arcix OS</div>
+      </div>
 
-<!-- MAIN WEBSITE -->
-<main id="site" role="main" tabindex="-1">
-  <header aria-label="Primary">
-    <div style="font-weight:900;font-size:1.3rem;background:linear-gradient(90deg,var(--accent1),var(--accent2));
-      -webkit-background-clip:text;color:transparent;user-select:none;" aria-label="Arcix OS logo">arcix os</div>
-    <nav role="navigation" aria-label="Main menu">
-      <a href="#features" tabindex="0">Features</a>
-      <a href="#vision" tabindex="0">Vision</a>
-      <a href="#join" tabindex="0">Join</a>
-    </nav>
+      <nav class="links">
+        <a href="#features">Features</a>
+        <a href="#vision">Vision</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#join">Join</a>
+        <a class="cta-top" href="#join">Get Involved</a>
+      </nav>
+    </div>
   </header>
 
-  <section class="hero" id="top">
-    <div>
-      <h1>Arcix OS</h1>
-      <p>The next-gen Android distro built for true customization and design freedom.</p>
-    </div>
-    <img src="https://dummyimage.com/400x300/1b1030/ffffff&text=Arcix+Preview" alt="Arcix OS UI preview showing a customizable Android desktop"/>
-  </section>
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="logo-wrap">
+          <img src="Icon Dark.png" alt="Arcix logo">
+        </div>
 
-  <section id="features">
-    <h2>Why Arcix?</h2>
-    <div class="feature-grid">
-      <article class="feature-card" tabindex="0">
-        <h3>Infinite Customization</h3>
-        <p>Rebuild Android from the ground up — visually, functionally, and structurally.</p>
-      </article>
-      <article class="feature-card" tabindex="0">
-        <h3>Next-Level UI</h3>
-        <p>Crafted by <strong>lilacviolets</strong> for the cleanest, most fluid design language ever.</p>
-      </article>
-      <article class="feature-card" tabindex="0">
-        <h3>Powered by Collaboration</h3>
-        <p>Co-founded by <strong>arimzyphr</strong> — bridging design and development into a unified OS.</p>
-      </article>
-    </div>
-  </section>
+        <h1 class="title">Arcix OS</h1>
+        <div class="subtitle">Built for everyone — privacy-first & community-funded</div>
+        <p class="lead">A next-generation open-source operating system that unifies mobile and desktop computing. Designed for schools, creators, developers, and everyday people — Arcix is privacy-first, productivity-focused, and built so contributors are paid fairly.</p>
 
-  <section id="vision">
-    <h2>The Vision</h2>
-    <p>We’re redefining Android customization — merging UI art and technical depth into something truly expressive.  
-      No overlays. No limits. Just creation.</p>
-  </section>
+        <div class="made-for">
+          <div class="label">Made for</div>
+          <div class="typed">
+            <span>students</span>
+            <span>creators</span>
+            <span>developers</span>
+            <span>teachers</span>
+            <span>everyone</span>
+            <span>you</span>
+          </div>
+        </div>
 
-  <section id="join">
-    <h2>Join the Arcix Movement</h2>
-    <p>Become part of the next-gen OS project shaping the future of open-source Android.</p>
-    <button class="cta" type="button" aria-label="Join the Alpha">Join the Alpha</button>
-  </section>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://github.com/Arcix-OS" target="_blank" rel="noopener">Contribute on GitHub</a>
+          <button class="btn btn-ghost" onclick="document.getElementById('join').scrollIntoView({behavior:'smooth'})">Request a School Pilot</button>
+        </div>
 
-  <footer>© 2025 lilacviolets × arimzyphr — arcix os</footer>
-</main>
+        <div class="panels">
+          <div class="panel">
+            <h4>For Schools</h4>
+            <p>Offline-ready lessons, teacher dashboards, and low-cost device support for districts and communities.</p>
+          </div>
+          <div class="panel">
+            <h4>For Creators</h4>
+            <p>Studio tools, streaming support, low-latency audio, and fast content workflows built into the system.</p>
+          </div>
+          <div class="panel">
+            <h4>For Everyone</h4>
+            <p>Accessible, secure, and high-performance — Arcix works on modern and older hardware so more people can benefit.</p>
+          </div>
+        </div>
+      </div>
 
-<script>
-  const boot = document.getElementById('boot');
-  const site = document.getElementById('site');
-  const scan = document.getElementById('scanbar');
-  const bootText = document.getElementById('bootText');
+      <div class="scroll-indicator">
+        <span>Scroll</span>
+      </div>
+    </section>
 
-  function startBoot() {
-    // reset scan bar
-    scan.style.transition = 'none';
-    scan.style.transform = 'translateX(-100%)';
-    setTimeout(() => scan.style.transition = 'transform 3s linear', 20);
-    setTimeout(() => scan.style.transform = 'translateX(300%)', 50);
+    <section id="features" class="content">
+      <div class="section-inner">
+        <h3 class="section-title">Why Arcix OS?</h3>
+        <p class="section-sub">Productivity, privacy, and purpose — in one open OS.</p>
 
-    const msgs = [
-      "Initializing hardware…",
-      "Loading modules…",
-      "Starting UI engine…",
-      "Arcix ready."
-    ];
-    msgs.forEach((m, i) => setTimeout(() => bootText.textContent = m, 800 * i));
+        <div class="grid cols-3">
+          <div class="card">
+            <h3>Unified Workspace</h3>
+            <p>A single, adaptable workspace across phone, tablet, and PC — floating windows and task-focused layouts.</p>
+          </div>
+          <div class="card">
+            <h3>Arcix Mind</h3>
+            <p>On-device assistance that summarizes notes, suggests workflows, and automates repetitive tasks — all offline by default.</p>
+          </div>
+          <div class="card">
+            <h3>Arcix Connect</h3>
+            <p>High-quality calls and messaging over any WiFi network without cellular coverage. End-to-end encrypted with seamless device switching.</p>
+          </div>
+          <div class="card">
+            <h3>Community Funding</h3>
+            <p>Transparent funding that pays contributors, funds education pilots, and supports long-term maintenance.</p>
+          </div>
+        </div>
 
-    // Auto fade after sequence
-    setTimeout(() => {
-      boot.classList.add('hide');
-      site.classList.add('show');
-      site.focus();
-    }, msgs.length * 800 + 1000);
-  }
+        <div class="grid cols-2" style="margin-top:32px">
+          <div class="card">
+            <h3>Security & Privacy</h3>
+            <p>Per-app permissions, encrypted vaults, verified boot, and minimal telemetry by design.</p>
+          </div>
+          <div class="card">
+            <h3>App Compatibility</h3>
+            <p>Android apps, PWAs, and optional containers for advanced desktop-style applications.</p>
+          </div>
+          <div class="card">
+            <h3>Cross-Device Communication</h3>
+            <p>Start calls on your phone and continue on desktop. Integrated voicemail and messaging hub with offline message queuing.</p>
+          </div>
+          <div class="card">
+            <h3>WiFi-First Network</h3>
+            <p>Make calls and send messages over any WiFi network without cellular coverage — perfect for schools and community spaces.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  /* particles (original behavior) */
-  const root = document.getElementById('particles');
-  function spawnParticles() {
-    const count = Math.min(80, Math.floor(window.innerWidth / 12));
-    for (let i = 0; i < count; i++) {
-      const p = document.createElement('div');
-      p.className = 'p';
-      const s = Math.random() * 6 + 2;
-      p.style.width = p.style.height = s + 'px';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.top = Math.random() * 100 + '%';
-      p.style.opacity = (Math.random() * 0.6 + 0.2).toFixed(2);
-      root.appendChild(p);
-      animateP(p);
-    }
-  }
-  function animateP(p) {
-    const d = 8000 + Math.random() * 10000;
-    const dx = (Math.random() - 0.5) * 30;
-    p.animate([
-      { transform: `translate(0,0)`, opacity: p.style.opacity },
-      { transform: `translate(${dx}vw,-110vh)`, opacity: 0 }
-    ], { duration: d, iterations: Infinity, easing: 'linear', delay: Math.random() * d });
-  }
+    <section id="vision" class="content">
+      <div class="section-inner">
+        <h3 class="section-title">The Vision</h3>
+        <p class="section-sub">Arcix OS aims to combine the clarity of mobile platforms with the power of desktop computing — all while remaining open, community-oriented, and accessible to everyone.</p>
 
-  // allow clicking the boot screen to skip (user requested "clicks")
-  function finishBoot() {
-    if (!boot.classList.contains('hide')) {
-      boot.classList.add('hide');
-      site.classList.add('show');
-      site.focus();
-    }
-  }
+        <div class="roadmap" id="roadmap">
+          <div class="mile">
+            <h4>0.0 — Blueprint</h4>
+            <p>Planning, brand design, and team formation.</p>
+          </div>
+          <div class="mile">
+            <h4>0.1 — Ignite</h4>
+            <p>Sync AOSP, prototype x86 desktop support.</p>
+          </div>
+          <div class="mile">
+            <h4>0.5 — Evolve</h4>
+            <p>Arcix Mind, classroom tools, and community pilots.</p>
+          </div>
+          <div class="mile">
+            <h4>1.0 — Ascend</h4>
+            <p>Stable desktop mode, education-ready builds, partner programs.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  // Events
-  window.addEventListener('load', () => { spawnParticles(); startBoot(); });
-  boot.addEventListener('click', finishBoot);       // click anywhere on boot to skip
-  window.addEventListener('keydown', (e) => {       // Escape to skip
-    if (e.key === 'Escape') finishBoot();
-  });
-</script>
+    <section id="join" class="content">
+      <div class="section-inner">
+        <h3 class="section-title">Join the Journey</h3>
+        <p class="section-sub">Arcix OS is in active development. Join us — contribute code, design, testing, or sponsor education pilots. We publish funding reports and contributor payments for transparency.</p>
 
-</body>
-</html>
+        <div class="contributors">
+          <div class="contributor">
+            <h4>lilacviolets</h4>
+            <div>Founder • UI & Experience</div>
+          </div>
+          <div class="contributor">
+            <h4>arimzyphr</h4>
+            <div>Co-Founder • Lead Developer</div>
+          </div>
+          <div class="contributor">
+            <h4>PCMan67</h4>
+            <div>Developer • TS-0172</div>
+          </div>
+        </div>
+
+        <div class="donate">
+          <div class="pill">Open-source • Charity-funded</div>
+          <div class="pill">Developer Bounties • Education Grants</div>
+        </div>
+
+        <form class="contact" onsubmit="handleJoin(event)">
+          <input name="name" placeholder="Your name" required />
+          <input type="email" name="email" placeholder="Email address" required />
+          <textarea name="message" placeholder="How you'd like to help or pilot details" required></textarea>
+          <div style="display:flex;gap:16px;justify-content:center;margin-top:12px;flex-wrap:wrap">
+            <button class="btn btn-primary" type="submit">Join Waitlist</button>
+            <a class="btn btn-ghost" href="https://github.com/Arcix-OS" target="_blank" rel="noopener">View Repo</a>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
